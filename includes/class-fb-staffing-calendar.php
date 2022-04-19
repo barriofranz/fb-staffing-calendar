@@ -91,7 +91,7 @@ class Fb_Staffing_Calendar {
 		if ( 'toplevel_page_fb-staffing-calendar' === $current_screen->base ) {
 
 
-			// wp_localize_script( 'fb_sc_js', 'ajaxArr', array( 'ajaxDatasource' => admin_url( 'admin-ajax.php' )));
+
 
 			// wp_register_style( 'Font_Awesome', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css' );
 			// wp_enqueue_style('Font_Awesome');
@@ -105,6 +105,7 @@ class Fb_Staffing_Calendar {
 
 			$js = plugins_url('fb-staffing-calendar/public/js/fb-staffing-calendar-public.js');
 			wp_enqueue_script( 'fb_sc_js', $js);
+			wp_localize_script( 'fb_sc_js', 'ajaxArr', array( 'ajaxUrl' => admin_url( 'admin-ajax.php' )));
 
 			wp_enqueue_style( 'bootstrapcss','https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css', false, null );
 			wp_enqueue_script( 'bootstappopperjs', 'https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js', false, null );
@@ -267,7 +268,7 @@ class Fb_Staffing_Calendar {
 	{
 		if ( isset( $_GET['page'] ) && 'fb-staffing-calendar' === $_GET['page'] ) {
 
-			if ( isset($_POST) && isset($_POST['add_shift']) ) {
+			if ( isset($_POST) && isset($_POST['submit_shift']) && $_POST['submit_shift']=='Add' ) {
 
 				global $table_prefix, $wpdb;
 				$wpdb->insert($wpdb->prefix . 'fb_sc_shift_schedules', array(
@@ -278,6 +279,19 @@ class Fb_Staffing_Calendar {
 		            'shift_schedules_dateto' => $_POST['date_to'],
 		            'shift_schedules_timeto' => $_POST['time_to'],
 		        ));
+			} else if ( isset($_POST) && isset($_POST['submit_shift']) && $_POST['submit_shift']=='Update' ) {
+				global $table_prefix, $wpdb;
+				$wpdb->update($wpdb->prefix . 'fb_sc_shift_schedules',
+					[
+						'shift_schedules_location_id'=>$_POST['location_id'],
+						'shift_schedules_shifttype_id'=>$_POST['shift_id'],
+						'shift_schedules_datefrom'=>$_POST['date_from'],
+						'shift_schedules_timefrom'=>$_POST['time_from'],
+						'shift_schedules_dateto'=>$_POST['date_to'],
+						'shift_schedules_timeto'=>$_POST['time_to'],
+					],
+					array('shift_schedules_id'=>$_POST['hidden_shift_id']));
+
 			}
 		}
 	}

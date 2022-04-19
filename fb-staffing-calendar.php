@@ -80,3 +80,33 @@ function run_fb_staffing_calendar() {
 
 }
 run_fb_staffing_calendar();
+
+
+add_action("wp_ajax_getShiftScheduleData", "getShiftScheduleData");
+add_action("wp_ajax_deleteShiftScheduleData", "deleteShiftScheduleData");
+function getShiftScheduleData()
+{
+	global $wpdb;
+
+	$dataid = $_POST['dataid'];
+
+	$sql = '
+	SELECT * FROM '.$wpdb->prefix.'fb_sc_shift_schedules WHERE shift_schedules_id = "'.$dataid.'"';
+
+	$result = $wpdb->get_results($sql);
+	echo json_encode($result[0]);
+
+	die();
+}
+
+function deleteShiftScheduleData()
+{
+	global $wpdb;
+
+	$dataid = $_POST['dataid'];
+	$sql = '
+	DELETE FROM '.$wpdb->prefix.'fb_sc_shift_schedules WHERE shift_schedules_id = "'.$dataid.'"';
+
+	$wpdb->get_results($sql);
+	// echo json_encode($result[0]);
+}

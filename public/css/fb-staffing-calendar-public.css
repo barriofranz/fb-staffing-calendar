@@ -3,6 +3,9 @@
 * included in this file.
 */
 
+.fb-panel {
+    margin-top: 50px;
+}
 .wrap {
     background: #fff;
     padding: 15px;
@@ -32,4 +35,8 @@ width: 100%;
 
 .add_shift {
     float: right;
+}
+
+.btn {
+    color: #fff;
 }
