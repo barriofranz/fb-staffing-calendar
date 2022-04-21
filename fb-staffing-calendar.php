@@ -83,7 +83,6 @@ run_fb_staffing_calendar();
 
 
 add_action("wp_ajax_getShiftScheduleData", "getShiftScheduleData");
-add_action("wp_ajax_deleteShiftScheduleData", "deleteShiftScheduleData");
 function getShiftScheduleData()
 {
 	global $wpdb;
@@ -99,6 +98,7 @@ function getShiftScheduleData()
 	die();
 }
 
+add_action("wp_ajax_deleteShiftScheduleData", "deleteShiftScheduleData");
 function deleteShiftScheduleData()
 {
 	global $wpdb;
@@ -109,4 +109,63 @@ function deleteShiftScheduleData()
 
 	$wpdb->get_results($sql);
 	// echo json_encode($result[0]);
+}
+
+add_action("wp_ajax_getCalendarDays", "getCalendarDays");
+add_action("wp_ajax_nopriv_getCalendarDays", "getCalendarDays");
+function getCalendarDays()
+{
+	ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+	$month = $_POST['month'];
+	$year = $_POST['year'];
+
+	$yearmonth = $year . '/' . $month . '/01';
+
+	$timestamp = strtotime('next Sunday');
+	$days = array(); //used
+	for ($i = 0; $i < 7; $i++) {
+	    $days[] = strftime('%A', $timestamp);
+	    $timestamp = strtotime('+1 day', $timestamp);
+	}
+
+	$maxDays=date('t',strtotime($yearmonth)); //used
+	$currentDayOfMonth=date('j'); //used
+	$currentDayLastOfMonth=date('w', strtotime($year . '/' . $month . '/' . $maxDays)); //used
+
+	$firstDayOffset = date('w',strtotime($yearmonth)); //used
+	// echo "<pre>";print_r($currentDayLastOfMonth);echo "</pre>";die();
+	include_once __DIR__ . '/public/partials/calendardays.php';
+
+
+
+	die();
+}
+
+add_shortcode( 'fb_sc_display_calendar', 'fb_sc_display_calendar_func' );
+function fb_sc_display_calendar_func( $atts ){
+wp_enqueue_script("jquery");
+
+
+
+	// $css = plugins_url('fb-staffing-calendar/public/css/fb-staffing-calendar-public.css');
+	// wp_enqueue_style( 'fb_sc_css', $css);
+
+
+	$js = plugins_url('fb-staffing-calendar/public/js/fb-sc-frontjs.js');
+	wp_enqueue_script('fb_sc_front_js', $js, array('jquery'));
+	wp_localize_script( 'fb_sc_front_js', 'ajaxArr', array( 'ajaxUrl' => admin_url( 'admin-ajax.php' )));
+
+	wp_enqueue_script( 'bootstppopperjs', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js', false, null );
+	// wp_enqueue_script( 'bootstppopperjs', 'https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js', false, null );
+
+	wp_enqueue_style( 'bootstrapcss','https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css', false, null );
+	wp_enqueue_script( 'bootstapjs', 'https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js', false, null );
+
+
+
+	include_once __DIR__ . '/public/partials/calendar_template.php';
+	return;
 }

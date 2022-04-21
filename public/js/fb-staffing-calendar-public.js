@@ -75,8 +75,10 @@
 
 		request.fail(function(response) {
 			$('.fb-form-elem').removeAttr('disabled');
-			console.log('fail');
+			// console.log('fail');
 		});
 	});
+
+
 
 })( jQuery );

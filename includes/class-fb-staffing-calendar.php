@@ -90,18 +90,10 @@ class Fb_Staffing_Calendar {
 
 		if ( 'toplevel_page_fb-staffing-calendar' === $current_screen->base ) {
 
-
-
-
-			// wp_register_style( 'Font_Awesome', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css' );
-			// wp_enqueue_style('Font_Awesome');
-
-			// wp_register_script( 'timepickerjs', 'https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.js', null, null, true );
-			// wp_enqueue_script('timepickerjs');
-
-
+			
 			$css = plugins_url('fb-staffing-calendar/public/css/fb-staffing-calendar-public.css');
 			wp_enqueue_style( 'fb_sc_css', $css);
+
 
 			$js = plugins_url('fb-staffing-calendar/public/js/fb-staffing-calendar-public.js');
 			wp_enqueue_script( 'fb_sc_js', $js);
@@ -110,7 +102,7 @@ class Fb_Staffing_Calendar {
 			wp_enqueue_style( 'bootstrapcss','https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css', false, null );
 			wp_enqueue_script( 'bootstappopperjs', 'https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js', false, null );
 			wp_enqueue_script( 'bootstapjs', 'https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js', false, null );
-			// wp_enqueue_script( 'bootstapjs', 'https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js', false, null );
+
 		}
 	}
 
