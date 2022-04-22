@@ -9,7 +9,10 @@
 <ul class="days">
 
 
-<?php for ( $a=1; $a<=$maxDays; $a++ ) : ?>
+<?php
+// echo "<pre>";print_r($daysWithShifts);echo "</pre>";die();
+for ( $a=1; $a<=$maxDays; $a++ ) :
+?>
 
     <?php
     // echo $currentDayOfMonth;
@@ -18,7 +21,24 @@
             echo '<li></li>';
         endfor;
     }
-    echo '<li class="selectable ' . ( ($currentDayOfMonth == $a) ? 'active' : ''  ) . ' " data-day="'.$a.'">'.$a.'</li>';
+
+    $unclaimed = '';
+    if ( isset($daysWithShifts['unclaimed'][$a]) ) {
+        $unclaimed = '<span class="badge badge-success">' . $daysWithShifts['unclaimed'][$a] . ' available</span><br>';
+    }
+
+    $claimed = '';
+    if ( isset($daysWithShifts['claimed'][$a]) ) {
+        $claimed = '<span class="badge badge-secondary">' . $daysWithShifts['claimed'][$a] . ' claimed</span><br>';
+    }
+
+    echo '
+    <li class="selectable ' . ( ($currentDayOfMonth == $a) ? 'active' : ''  ) . ' " data-day="'.$a.'">
+    <span>'.$a.'</span><br>
+    '.$unclaimed.'
+    '.$claimed.'
+
+    </li>';
 
     if ( $a == $maxDays) {
         for ( $b=1; $b<=(6-$currentDayLastOfMonth); $b++ ) :

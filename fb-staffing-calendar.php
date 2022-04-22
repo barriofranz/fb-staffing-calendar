@@ -16,7 +16,7 @@
  * Plugin Name:       FB Staffing Calendar
  * Plugin URI:        https://github.com/barriofranz
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           1.0.0
+ * Version:           1.0.2
  * Author:            Franz Ian Barrio
  * Author URI:        https://github.com/barriofranz
  * License:           GPL-2.0+
@@ -30,6 +30,9 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 /**
  * Currently plugin version.
  * Start at version 1.0.0 and use SemVer - https://semver.org
@@ -98,6 +101,38 @@ function getShiftScheduleData()
 	die();
 }
 
+add_action("wp_ajax_getLocData", "getLocData");
+function getLocData()
+{
+	global $wpdb;
+
+	$dataid = $_POST['dataid'];
+
+	$sql = '
+	SELECT * FROM '.$wpdb->prefix.'fb_sc_locations WHERE location_id = "'.$dataid.'"';
+
+	$result = $wpdb->get_results($sql);
+	echo json_encode($result[0]);
+
+	die();
+}
+
+add_action("wp_ajax_getShiftTypeData", "getShiftTypeData");
+function getShiftTypeData()
+{
+	global $wpdb;
+
+	$dataid = $_POST['dataid'];
+
+	$sql = '
+	SELECT * FROM '.$wpdb->prefix.'fb_sc_shift_type WHERE shifttype_id = "'.$dataid.'"';
+
+	$result = $wpdb->get_results($sql);
+	echo json_encode($result[0]);
+
+	die();
+}
+
 add_action("wp_ajax_deleteShiftScheduleData", "deleteShiftScheduleData");
 function deleteShiftScheduleData()
 {
@@ -111,16 +146,40 @@ function deleteShiftScheduleData()
 	// echo json_encode($result[0]);
 }
 
+add_action("wp_ajax_deleteLocData", "deleteLocData");
+function deleteLocData()
+{
+	global $wpdb;
+
+	$dataid = $_POST['dataid'];
+	$sql = '
+	DELETE FROM '.$wpdb->prefix.'fb_sc_locations WHERE location_id = "'.$dataid.'"';
+
+	$wpdb->get_results($sql);
+	// echo json_encode($result[0]);
+}
+
+add_action("wp_ajax_deleteShiftTypeData", "deleteShiftTypeData");
+function deleteShiftTypeData()
+{
+	global $wpdb;
+
+	$dataid = $_POST['dataid'];
+	$sql = '
+	DELETE FROM '.$wpdb->prefix.'fb_sc_shift_type WHERE shifttype_id = "'.$dataid.'"';
+
+	$wpdb->get_results($sql);
+	// echo json_encode($result[0]);
+}
+
 add_action("wp_ajax_getCalendarDays", "getCalendarDays");
 add_action("wp_ajax_nopriv_getCalendarDays", "getCalendarDays");
 function getCalendarDays()
 {
-	ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 	$month = $_POST['month'];
 	$year = $_POST['year'];
+	$shifttype = $_POST['shifttype'];
 
 	$yearmonth = $year . '/' . $month . '/01';
 
@@ -137,6 +196,8 @@ error_reporting(E_ALL);
 
 	$firstDayOffset = date('w',strtotime($yearmonth)); //used
 	// echo "<pre>";print_r($currentDayLastOfMonth);echo "</pre>";die();
+
+	$daysWithShifts = getDaysWithShifts($year, $month, $shifttype);
 	include_once __DIR__ . '/public/partials/calendardays.php';
 
 
@@ -144,21 +205,118 @@ error_reporting(E_ALL);
 	die();
 }
 
+
+function getDaysWithShifts($year, $month, $shifttype)
+{
+	global $wpdb;
+
+	$shifttypeCond = '';
+	if ( $shifttype != 0 ) {
+		$shifttypeCond = '
+		AND shift_schedules_shifttype_id =' . $shifttype;
+	}
+	$sql = '
+	SELECT * FROM '.$wpdb->prefix.'fb_sc_shift_schedules
+	where
+	MONTH(shift_schedules_datefrom) = "'.$month.'"
+	AND YEAR(shift_schedules_datefrom) = "'.$year.'"
+	' . $shifttypeCond . '
+	';
+
+	$shifts = $wpdb->get_results($sql);
+
+	$shifts1 = [];
+	$shifts2 = [];
+	foreach ($shifts as $shift) {
+
+		$day = date('d', strtotime($shift->shift_schedules_datefrom));
+		if (empty($shift->shift_schedules_email)) {
+			if (!array_key_exists($day, $shifts1)) {
+				$shifts1[$day] = 0;
+			}
+			$shifts1[$day]++;
+		} else {
+			if (!array_key_exists($day, $shifts2)) {
+				$shifts2[$day] = 0;
+			}
+			$shifts2[$day]++;
+		}
+
+	}
+
+	return [
+		'unclaimed' => $shifts1,
+		'claimed' => $shifts2,
+	];
+}
+
+
+add_action("wp_ajax_getDateShifts", "getDateShifts");
+add_action("wp_ajax_nopriv_getDateShifts", "getDateShifts");
+function getDateShifts()
+{
+	global $wpdb;
+
+	$date = $_POST['date'];
+
+	$sql = '
+	SELECT * FROM '.$wpdb->prefix.'fb_sc_shift_schedules t1
+	left join ' . $wpdb->prefix . 'fb_sc_shift_type t2 on t1.shift_schedules_shifttype_id = t2.shifttype_id
+	left join ' . $wpdb->prefix . 'fb_sc_locations t3 on t1.shift_schedules_location_id = t3.location_id
+	WHERE shift_schedules_datefrom = "'.$date.'"';
+
+	$shift_schedules = $wpdb->get_results($sql);
+
+	include_once __DIR__ . '/public/partials/availableshifts-rows.php';
+
+	die();
+}
+
+add_action("wp_ajax_updateShiftEmail", "updateShiftEmail");
+add_action("wp_ajax_nopriv_updateShiftEmail", "updateShiftEmail");
+function updateShiftEmail()
+{
+	global $wpdb;
+	$email = $_POST['email'];
+	$dataid = $_POST['dataid'];
+
+	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		echo json_encode(['success'=>2]);
+  	  	die();
+	}
+
+	$sql = '
+	SELECT shift_schedules_email FROM '.$wpdb->prefix.'fb_sc_shift_schedules WHERE shift_schedules_id = "'.$dataid.'"';
+	$res = $wpdb->get_results($sql);
+	if ( empty($res[0]->shift_schedules_email) ) {
+
+		$sql = '
+		UPDATE '.$wpdb->prefix.'fb_sc_shift_schedules SET shift_schedules_email = "' . $email . '" WHERE shift_schedules_id = "'.$dataid.'"';
+		$wpdb->get_results($sql);
+
+		echo json_encode(['success'=>1]);
+		die();
+	}
+
+	echo json_encode(['success'=>0]);
+
+	die();
+}
+
 add_shortcode( 'fb_sc_display_calendar', 'fb_sc_display_calendar_func' );
-function fb_sc_display_calendar_func( $atts ){
-wp_enqueue_script("jquery");
+function fb_sc_display_calendar_func( $atts )
+{
+	include_once __DIR__ . '/includes/class-fb-staffing-calendar.php';
 
-
-
+	wp_enqueue_script("jquery");
 	// $css = plugins_url('fb-staffing-calendar/public/css/fb-staffing-calendar-public.css');
 	// wp_enqueue_style( 'fb_sc_css', $css);
-
 
 	$js = plugins_url('fb-staffing-calendar/public/js/fb-sc-frontjs.js');
 	wp_enqueue_script('fb_sc_front_js', $js, array('jquery'));
 	wp_localize_script( 'fb_sc_front_js', 'ajaxArr', array( 'ajaxUrl' => admin_url( 'admin-ajax.php' )));
 
-	wp_enqueue_script( 'bootstppopperjs', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js', false, null );
+	// wp_enqueue_script( 'bootstppopperjs', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js', false, null );
 	// wp_enqueue_script( 'bootstppopperjs', 'https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js', false, null );
 
 	wp_enqueue_style( 'bootstrapcss','https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css', false, null );
@@ -166,6 +324,9 @@ wp_enqueue_script("jquery");
 
 
 
+	$scInc = new Fb_Staffing_Calendar;
+	$getShiftTypes = $scInc->getShiftTypes();
+	// echo "<pre>";print_r($getShiftTypes);echo "</pre>";die();
 	include_once __DIR__ . '/public/partials/calendar_template.php';
 	return;
 }

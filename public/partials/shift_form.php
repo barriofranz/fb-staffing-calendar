@@ -1,4 +1,4 @@
-<div class="panel fb-panel">
+<div class="panel fb-panel fb_sc_maindiv">
     <h3 class="card-title">Shift Schedules</h3>
 
     <div class="row card-body">
@@ -11,7 +11,7 @@
                 </div>
             </div>
             <br>
-            <div class="crow">
+            <div class="shiftform">
                 <form action="" method="post">
                     <input type="hidden" name="hidden_shift_id" id="hidden_shift_id" value="" class="fb-form-elem">
 
@@ -70,7 +70,7 @@
                     </div>
 
                     <div class="submit-div">
-                        <input type="submit" name="submit_shift" id="submit_shift" class="button button-primary add_shift fb-form-elem" value="Add">
+                        <input type="submit" name="submit_shift" id="submit_shift" class="button button-primary add_shift fb-form-elem fb_sc_submitbtn" value="Add">
                     </div>
 
 
@@ -82,7 +82,7 @@
         <br>
 
         <div class="col-sm-6">
-            <table class="table table-sm table-bordered table-responsive table-hover table-condensed">
+            <table class="table table-sm table-bordered table-hover table-condensed fb_sc_table">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -114,5 +114,153 @@
 
             </table>
         </div>
+
     </div> <!-- row -->
+</div>
+
+
+<div class="panel fb-panel fb_sc_maindiv">
+    <h3 class="card-title">Locations</h3>
+
+    <div class="row card-body">
+
+        <div class="col-sm-6">
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <span class="badge badge-primary" id="add-edit-span_loc"></span>
+                    <button  type="submit" class="new_loc btn btn-primary btn-sm float-right"><span class="dashicons dashicons-plus-alt2"></span></button>
+                </div>
+            </div>
+            <br>
+
+
+            <div class="locform">
+                <form action="" method="post">
+                    <input type="hidden" name="hidden_loc_id" id="hidden_loc_id" value="" class="fb-form-elem">
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Location Name</label>
+                        <div class="col-sm-8 ">
+                            <input type="text" class="fb-input form-control form-control-sm fb-form-elem" id="loc_name" name="loc_name" required>
+
+                        </div>
+                    </div>
+
+                    <div class="submit-div">
+                        <input type="submit" name="submit_loc" id="submit_loc" class="button button-primary add_loc fb-form-elem fb_sc_submitbtn" value="Add">
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+
+
+        <br>
+
+        <div class="col-sm-6">
+            <table class="table table-sm table-bordered table-hover table-condensed fb_sc_table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Location</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <?php foreach ( $locations as $val ) :?>
+                    <tr data-id="<?= $val->location_id ?>">
+                        <td><?= $val->location_id ?></td>
+                        <td><?= $val->location_name ?></td>
+                        <td>
+                            <div class="btn-group btn-group-toggle">
+                                <button class="btn btn-sm btn-info btn-edit-loc"><span class="dashicons dashicons-edit"></span></button>
+                                <button class="btn btn-sm btn-danger btn-delete-loc"><span class="dashicons dashicons-trash"></span></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach;?>
+                </tbody>
+
+            </table>
+        </div>
+
+
+    </div>
+</div>
+
+
+
+
+<div class="panel fb-panel fb_sc_maindiv">
+    <h3 class="card-title">Shift Types</h3>
+
+    <div class="row card-body">
+
+        <div class="col-sm-6">
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <span class="badge badge-primary" id="add-edit-span_shifttype"></span>
+                    <button  type="submit" class="new_shifttype btn btn-primary btn-sm float-right"><span class="dashicons dashicons-plus-alt2"></span></button>
+                </div>
+            </div>
+            <br>
+
+
+            <div class="shifttypeform">
+                <form action="" method="post">
+                    <input type="hidden" name="hidden_shifttype_id" id="hidden_shifttype_id" value="" class="fb-form-elem">
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Shift Type</label>
+                        <div class="col-sm-8 ">
+                            <input type="text" class="fb-input form-control form-control-sm fb-form-elem" id="shifttype_name" name="shifttype_name" required>
+                        </div>
+                    </div>
+
+                    <div class="submit-div">
+                        <input type="submit" name="submit_shifttype" id="submit_shifttype" class="button button-primary add_shifttype fb-form-elem fb_sc_submitbtn" value="Add">
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+
+
+        <br>
+
+        <div class="col-sm-6">
+            <table class="table table-sm table-bordered table-hover table-condensed fb_sc_table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Shift Type</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <?php foreach ( $shift_types as $val ) :?>
+                    <tr data-id="<?= $val->shifttype_id ?>">
+                        <td><?= $val->shifttype_id ?></td>
+                        <td><?= $val->shifttype_name ?></td>
+                        <td>
+                            <div class="btn-group btn-group-toggle">
+                                <button class="btn btn-sm btn-info btn-edit-shifttype"><span class="dashicons dashicons-edit"></span></button>
+                                <button class="btn btn-sm btn-danger btn-delete-shifttype"><span class="dashicons dashicons-trash"></span></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach;?>
+                </tbody>
+
+            </table>
+        </div>
+
+
+    </div>
 </div>

@@ -77,6 +77,7 @@ class Fb_Staffing_Calendar_Activator {
 			`shift_schedules_id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			`shift_schedules_location_id` int(11),
 			`shift_schedules_shifttype_id` int(11),
+			`shift_schedules_email` varchar(255),
 			`shift_schedules_datefrom` date,
 			`shift_schedules_timefrom` time,
 			`shift_schedules_dateto` date,

@@ -90,7 +90,7 @@ class Fb_Staffing_Calendar {
 
 		if ( 'toplevel_page_fb-staffing-calendar' === $current_screen->base ) {
 
-			
+
 			$css = plugins_url('fb-staffing-calendar/public/css/fb-staffing-calendar-public.css');
 			wp_enqueue_style( 'fb_sc_css', $css);
 
@@ -259,7 +259,7 @@ class Fb_Staffing_Calendar {
 	public function init()
 	{
 		if ( isset( $_GET['page'] ) && 'fb-staffing-calendar' === $_GET['page'] ) {
-
+			// echo "<pre>";print_r($_POST);echo "</pre>";die();
 			if ( isset($_POST) && isset($_POST['submit_shift']) && $_POST['submit_shift']=='Add' ) {
 
 				global $table_prefix, $wpdb;
@@ -271,20 +271,50 @@ class Fb_Staffing_Calendar {
 		            'shift_schedules_dateto' => $_POST['date_to'],
 		            'shift_schedules_timeto' => $_POST['time_to'],
 		        ));
+
 			} else if ( isset($_POST) && isset($_POST['submit_shift']) && $_POST['submit_shift']=='Update' ) {
 				global $table_prefix, $wpdb;
 				$wpdb->update($wpdb->prefix . 'fb_sc_shift_schedules',
-					[
-						'shift_schedules_location_id'=>$_POST['location_id'],
-						'shift_schedules_shifttype_id'=>$_POST['shift_id'],
-						'shift_schedules_datefrom'=>$_POST['date_from'],
-						'shift_schedules_timefrom'=>$_POST['time_from'],
-						'shift_schedules_dateto'=>$_POST['date_to'],
-						'shift_schedules_timeto'=>$_POST['time_to'],
-					],
-					array('shift_schedules_id'=>$_POST['hidden_shift_id']));
+				[
+					'shift_schedules_location_id'=>$_POST['location_id'],
+					'shift_schedules_shifttype_id'=>$_POST['shift_id'],
+					'shift_schedules_datefrom'=>$_POST['date_from'],
+					'shift_schedules_timefrom'=>$_POST['time_from'],
+					'shift_schedules_dateto'=>$_POST['date_to'],
+					'shift_schedules_timeto'=>$_POST['time_to'],
+				],
+				array('shift_schedules_id'=>$_POST['hidden_shift_id']));
 
 			}
+
+			if ( isset($_POST) && isset($_POST['submit_loc']) && $_POST['submit_loc']=='Add' ) {
+				global $table_prefix, $wpdb;
+				$wpdb->insert($wpdb->prefix . 'fb_sc_locations', array(
+		            'location_name' => $_POST['loc_name'],
+		        ));
+			} else if ( isset($_POST) && isset($_POST['submit_loc']) && $_POST['submit_loc']=='Update' ) {
+				global $table_prefix, $wpdb;
+				$wpdb->update($wpdb->prefix . 'fb_sc_locations',
+				[
+					'location_name'=>$_POST['loc_name'],
+				],
+				array('location_id'=>$_POST['hidden_loc_id']));
+			}
+
+			if ( isset($_POST) && isset($_POST['submit_shifttype']) && $_POST['submit_shifttype']=='Add' ) {
+				global $table_prefix, $wpdb;
+				$wpdb->insert($wpdb->prefix . 'fb_sc_shift_type', array(
+		            'shifttype_name' => $_POST['shifttype_name'],
+		        ));
+			} else if ( isset($_POST) && isset($_POST['submit_shifttype']) && $_POST['submit_shifttype']=='Update' ) {
+				global $table_prefix, $wpdb;
+				$wpdb->update($wpdb->prefix . 'fb_sc_shift_type',
+				[
+					'shifttype_name'=>$_POST['shifttype_name'],
+				],
+				array('shifttype_id'=>$_POST['hidden_shifttype_id']));
+			}
+
 		}
 	}
 
@@ -297,7 +327,7 @@ class Fb_Staffing_Calendar {
 		include_once __DIR__ . '/../public/partials/shift_form.php';
 	}
 
-	private function getShiftSchedules()
+	public function getShiftSchedules()
 	{
 		global $wpdb;
 		$sql = "
@@ -311,7 +341,7 @@ class Fb_Staffing_Calendar {
 		return $wpdb->get_results( $sql );
 	}
 
-	private function getLocations()
+	public function getLocations()
 	{
 		global $wpdb;
 
@@ -321,7 +351,7 @@ class Fb_Staffing_Calendar {
 
 	}
 
-	private function getShiftTypes()
+	public function getShiftTypes()
 	{
 		global $wpdb;
 
