@@ -57,6 +57,9 @@ class Fb_Staffing_Calendar {
 	 */
 	protected $version;
 
+
+	protected $alertType = '';
+	protected $alertMessage = '';
 	/**
 	 * Define the core functionality of the plugin.
 	 *
@@ -272,6 +275,30 @@ class Fb_Staffing_Calendar {
 		            'shift_schedules_timeto' => $_POST['time_to'],
 		        ));
 
+				$this->alertType = 'success';
+				$this->alertMessage = 'Shift saved';
+				add_action( 'admin_notices', [ $this, 'showNotice' ]);
+
+				$dataid = $wpdb->insert_id;
+
+				$shift = $this->getShiftSchedulesByID($dataid)[0];
+
+				$fb_sc_emailfrom = get_option( 'fb_sc_emailfrom' );
+// 				if ( $fb_sc_emailfrom !== false ) {
+// $message = 'A new shift has been posted.<br>
+// Here are the details:<br>
+// <br>
+// Location: '.$shift->location_name.'
+// Shift type: '.$shift->shifttype_name.'
+// From: '.$shift->shift_schedules_datefrom.' '.$shift->shift_schedules_timefrom.'
+// To: '.$shift->shift_schedules_dateto.' '.$shift->shift_schedules_timeto.'
+// 				';
+//
+// 					$to = [$fb_sc_emailfrom];
+// 					$subject = "New shift schedule posted";
+// 					$headers = 'From: '. $fb_sc_emailfrom . "\r\n" . 'Reply-To: ' . $fb_sc_emailfrom . "\r\n";
+// 					$sent = wp_mail($to, $subject, strip_tags($message), $headers);
+// 				}
 			} else if ( isset($_POST) && isset($_POST['submit_shift']) && $_POST['submit_shift']=='Update' ) {
 				global $table_prefix, $wpdb;
 				$wpdb->update($wpdb->prefix . 'fb_sc_shift_schedules',
@@ -285,6 +312,28 @@ class Fb_Staffing_Calendar {
 				],
 				array('shift_schedules_id'=>$_POST['hidden_shift_id']));
 
+				$this->alertType = 'success';
+				$this->alertMessage = 'Shift updated';
+				add_action( 'admin_notices', [ $this, 'showNotice' ]);
+
+// 				$shift = $this->getShiftSchedulesByID($_POST['hidden_shift_id'])[0];
+//
+// 				$fb_sc_emailfrom = get_option( 'fb_sc_emailfrom' );
+// if ( $fb_sc_emailfrom !== false ) {
+// $message = 'A shift has been updated.<br>
+// Here are the details:<br>
+// <br>
+// Location: '.$shift->location_name.'
+// Shift type: '.$shift->shifttype_name.'
+// From: '.$shift->shift_schedules_datefrom.' '.$shift->shift_schedules_timefrom.'
+// To: '.$shift->shift_schedules_dateto.' '.$shift->shift_schedules_timeto.'
+// 				';
+//
+// 				$to = [$fb_sc_emailfrom];
+// 				$subject = "Shift schedule updated";
+// 				$headers = 'From: '. $fb_sc_emailfrom . "\r\n" . 'Reply-To: ' . $fb_sc_emailfrom . "\r\n";
+// 				$sent = wp_mail($to, $subject, strip_tags($message), $headers);
+// }
 			}
 
 			if ( isset($_POST) && isset($_POST['submit_loc']) && $_POST['submit_loc']=='Add' ) {
@@ -292,6 +341,11 @@ class Fb_Staffing_Calendar {
 				$wpdb->insert($wpdb->prefix . 'fb_sc_locations', array(
 		            'location_name' => $_POST['loc_name'],
 		        ));
+
+				$this->alertType = 'success';
+				$this->alertMessage = 'Location saved';
+				add_action( 'admin_notices', [ $this, 'showNotice' ]);
+
 			} else if ( isset($_POST) && isset($_POST['submit_loc']) && $_POST['submit_loc']=='Update' ) {
 				global $table_prefix, $wpdb;
 				$wpdb->update($wpdb->prefix . 'fb_sc_locations',
@@ -299,6 +353,10 @@ class Fb_Staffing_Calendar {
 					'location_name'=>$_POST['loc_name'],
 				],
 				array('location_id'=>$_POST['hidden_loc_id']));
+
+				$this->alertType = 'success';
+				$this->alertMessage = 'Location updated';
+				add_action( 'admin_notices', [ $this, 'showNotice' ]);
 			}
 
 			if ( isset($_POST) && isset($_POST['submit_shifttype']) && $_POST['submit_shifttype']=='Add' ) {
@@ -306,6 +364,10 @@ class Fb_Staffing_Calendar {
 				$wpdb->insert($wpdb->prefix . 'fb_sc_shift_type', array(
 		            'shifttype_name' => $_POST['shifttype_name'],
 		        ));
+
+				$this->alertType = 'success';
+				$this->alertMessage = 'Shift type saved';
+				add_action( 'admin_notices', [ $this, 'showNotice' ]);
 			} else if ( isset($_POST) && isset($_POST['submit_shifttype']) && $_POST['submit_shifttype']=='Update' ) {
 				global $table_prefix, $wpdb;
 				$wpdb->update($wpdb->prefix . 'fb_sc_shift_type',
@@ -313,9 +375,48 @@ class Fb_Staffing_Calendar {
 					'shifttype_name'=>$_POST['shifttype_name'],
 				],
 				array('shifttype_id'=>$_POST['hidden_shifttype_id']));
+
+				$this->alertType = 'success';
+				$this->alertMessage = 'Shift type updated';
+				add_action( 'admin_notices', [ $this, 'showNotice' ]);
+			}
+
+
+			if ( isset($_POST) && isset($_POST['submit_fb_sc_settings']) && $_POST['submit_fb_sc_settings']=='Save' ) {
+				$fb_sc_emailfrom = get_option( 'fb_sc_emailfrom' );
+				$email =  $_POST['fb_sc_emailfrom'];
+				if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+					$this->alertType = 'warning';
+					$this->alertMessage = 'Invalid Email';
+					add_action( 'admin_notices', [ $this, 'showNotice' ]);
+				} else {
+
+					if ( $fb_sc_emailfrom === false ) {
+						add_option('fb_sc_emailfrom',$email);
+					} else {
+						update_option('fb_sc_emailfrom', $email);
+					}
+
+					$this->alertType = 'success';
+					$this->alertMessage = 'Saved';
+					add_action( 'admin_notices', [ $this, 'showNotice' ]);
+				}
+
+
 			}
 
 		}
+
+	}
+
+	public function showNotice() {
+
+		echo '
+		<br>
+		<br>
+		<div class="alert alert-'.$this->alertType.'" role="alert">
+			'.$this->alertMessage.'
+		</div>';
 	}
 
 	public function display_page()
@@ -323,7 +424,9 @@ class Fb_Staffing_Calendar {
 		$locations = $this->getLocations();
 		$shift_types = $this->getShiftTypes();
 		$shift_scheds = $this->getShiftSchedules();
-		// echo "<pre>";print_r($shift_scheds);echo "</pre>";die();
+
+		$fb_sc_emailfrom = get_option( 'fb_sc_emailfrom' );
+
 		include_once __DIR__ . '/../public/partials/shift_form.php';
 	}
 
@@ -340,6 +443,18 @@ class Fb_Staffing_Calendar {
 		// echo "<pre>";print_r($sql);echo "</pre>";die();
 		return $wpdb->get_results( $sql );
 	}
+
+	public function getShiftSchedulesByID( $dataid)
+	{
+		global $wpdb;
+		$sql = '
+		SELECT * FROM '.$wpdb->prefix.'fb_sc_shift_schedules t1
+		left join ' . $wpdb->prefix . 'fb_sc_shift_type t2 on t1.shift_schedules_shifttype_id = t2.shifttype_id
+		left join ' . $wpdb->prefix . 'fb_sc_locations t3 on t1.shift_schedules_location_id = t3.location_id
+		WHERE shift_schedules_id = "'.$dataid.'"';
+		return $wpdb->get_results( $sql );
+	}
+
 
 	public function getLocations()
 	{

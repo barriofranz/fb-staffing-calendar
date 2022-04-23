@@ -16,7 +16,7 @@
  * Plugin Name:       FB Staffing Calendar
  * Plugin URI:        https://github.com/barriofranz
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           1.0.2
+ * Version:           1.0.3
  * Author:            Franz Ian Barrio
  * Author URI:        https://github.com/barriofranz
  * License:           GPL-2.0+
@@ -284,17 +284,36 @@ function updateShiftEmail()
 		echo json_encode(['success'=>2]);
   	  	die();
 	}
+	include_once __DIR__ . '/includes/class-fb-staffing-calendar.php';
+	$scInc = new Fb_Staffing_Calendar;
+	$res = $scInc->getShiftSchedulesByID($dataid)[0];
 
-	$sql = '
-	SELECT shift_schedules_email FROM '.$wpdb->prefix.'fb_sc_shift_schedules WHERE shift_schedules_id = "'.$dataid.'"';
-	$res = $wpdb->get_results($sql);
-	if ( empty($res[0]->shift_schedules_email) ) {
-
+	if ( empty($res->shift_schedules_email) ) {
+		$shift = $res;
 		$sql = '
 		UPDATE '.$wpdb->prefix.'fb_sc_shift_schedules SET shift_schedules_email = "' . $email . '" WHERE shift_schedules_id = "'.$dataid.'"';
 		$wpdb->get_results($sql);
 
 		echo json_encode(['success'=>1]);
+
+		$fb_sc_emailfrom = get_option( 'fb_sc_emailfrom' );
+		if ( $fb_sc_emailfrom !== false ) {
+			
+$message = 'A shift has been claimed.<br>
+Here are the details:<br>
+<br>
+Location: '.$shift->location_name.'
+Shift type: '.$shift->shifttype_name.'
+From: '.$shift->shift_schedules_datefrom.' '.$shift->shift_schedules_timefrom.'
+To: '.$shift->shift_schedules_dateto.' '.$shift->shift_schedules_timeto.'
+Claimed by: '.$email.'
+		';
+
+			$to = [$email, $fb_sc_emailfrom];
+			$subject = "Shift schedule claimed";
+			$headers = 'From: '. $fb_sc_emailfrom . "\r\n" . 'Reply-To: ' . $fb_sc_emailfrom . "\r\n";
+			$sent = wp_mail($to, $subject, strip_tags($message), $headers);
+		}
 		die();
 	}
 

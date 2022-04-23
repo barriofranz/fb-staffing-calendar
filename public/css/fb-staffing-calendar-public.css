@@ -150,6 +150,7 @@ width: 100%;
     /* border-left: 1px solid #fff; */
     padding: 10px 0;
     color: #004085 !important;
+    margin: 0;
 }
 
 .fb_sc_maindiv .days {
@@ -181,6 +182,7 @@ width: 100%;
     border-left: 1px solid #888888;
     padding: 5px;
     box-shadow: 1px 1px #888888;
+    margin: 0;
 }
 
 .fb_sc_maindiv .days li .active {
@@ -238,7 +240,7 @@ width: 100%;
 
 .fb_sc_maindiv #available-shifts-table th:first-of-type,
 .fb_sc_maindiv #available-shifts-table th:last-of-type {
-    width: 1px;
+    width: 40px;
 }
 
 .fb_sc_maindiv button.btn-claim-sched {

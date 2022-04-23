@@ -88,8 +88,8 @@
                         <th>#</th>
                         <th>Location</th>
                         <th>Shift Type</th>
-                        <th>From</th>
-                        <th>To</th>
+                        <th>Shift Schedule</th>
+                        <th>Email</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -100,8 +100,9 @@
                         <td><?= $val->shift_schedules_id ?></td>
                         <td><?= $val->location_name ?></td>
                         <td><?= $val->shifttype_name ?></td>
-                        <td><?= $val->shift_schedules_datefrom .' '. $val->shift_schedules_timefrom ?></td>
-                        <td><?= $val->shift_schedules_dateto . ' ' . $val->shift_schedules_timeto ?></td>
+                        <td>From: <?= $val->shift_schedules_datefrom .' '. date('H:i', strtotime($val->shift_schedules_timefrom)) ?><br>
+                            To: <?= $val->shift_schedules_dateto . ' ' . date('H:i', strtotime($val->shift_schedules_timeto)) ?></td>
+                        <td><?= $val->shift_schedules_email ?></td>
                         <td>
                             <div class="btn-group btn-group-toggle">
                                 <button class="btn btn-sm btn-info btn-edit-shift"><span class="dashicons dashicons-edit"></span></button>
@@ -189,6 +190,9 @@
 
 
     </div>
+
+    <div class="shifts-overlay">
+    </div>
 </div>
 
 
@@ -260,6 +264,48 @@
 
             </table>
         </div>
+
+
+    </div>
+</div>
+
+
+<div class="panel fb-panel fb_sc_maindiv">
+    <h3 class="card-title">Settings</h3>
+
+    <div class="row card-body">
+
+        <div class="col-sm-6">
+
+            <div class="row">
+                <div class="col-sm-12">
+
+                </div>
+            </div>
+            <br>
+
+
+            <div class="shifttypeform">
+                <form action="" method="post">
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Email from</label>
+                        <div class="col-sm-8 ">
+                            <input type="text" value="<?= $fb_sc_emailfrom ?>" class="fb-input form-control form-control-sm fb-form-elem" id="fb_sc_emailfrom" name="fb_sc_emailfrom" required>
+                        </div>
+                    </div>
+
+                    <div class="submit-div">
+                        <input type="submit" name="submit_fb_sc_settings" id="submit_fb_sc_settings" class="button button-primary fb-form-elem fb_sc_submitbtn" value="Save">
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+
+
+        <br>
 
 
     </div>

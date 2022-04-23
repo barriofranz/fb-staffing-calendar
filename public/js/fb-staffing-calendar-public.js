@@ -2,10 +2,8 @@
 	'use strict';
 
 
-	$(document).on('click', '.fb_sc_submitbtn', function(e){
-		e.preventDefault();
-		// $(this).parents('form').trigger('submit');
-		// $('.fb-form-elem, .new_shift_sched, .new_loc, .new_shifttype').attr('disabled','disabled');
+	$(document).on('submit', 'form', function(e){
+		$('.shifts-overlay').show();
 
 	});
 
@@ -30,6 +28,7 @@
 	$(document).on('click', '.btn-delete-shift', function(){
 
 		if (confirm("Confirm delete.")) {
+			$('.shifts-overlay').show();
 			var dataid = $(this).parents('tr').attr('data-id');
 
 			$('.shiftform .fb-form-elem').attr('disabled','disabled');
@@ -54,6 +53,7 @@
 	$(document).on('click', '.btn-delete-loc', function(){
 
 		if (confirm("Confirm delete.")) {
+			$('.shifts-overlay').show();
 			var dataid = $(this).parents('tr').attr('data-id');
 
 			$('.locform .fb-form-elem').attr('disabled','disabled');
@@ -78,6 +78,7 @@
 	$(document).on('click', '.btn-delete-shifttype', function(){
 
 		if (confirm("Confirm delete.")) {
+			$('.shifts-overlay').show();
 			var dataid = $(this).parents('tr').attr('data-id');
 
 			$('.shifttypeform .fb-form-elem').attr('disabled','disabled');
