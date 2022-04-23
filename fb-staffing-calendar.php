@@ -16,7 +16,7 @@
  * Plugin Name:       FB Staffing Calendar
  * Plugin URI:        https://github.com/barriofranz
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           1.0.3
+ * Version:           1.0.4
  * Author:            Franz Ian Barrio
  * Author URI:        https://github.com/barriofranz
  * License:           GPL-2.0+
@@ -298,7 +298,7 @@ function updateShiftEmail()
 
 		$fb_sc_emailfrom = get_option( 'fb_sc_emailfrom' );
 		if ( $fb_sc_emailfrom !== false ) {
-			
+
 $message = 'A shift has been claimed.<br>
 Here are the details:<br>
 <br>
