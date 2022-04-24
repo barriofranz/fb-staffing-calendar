@@ -2,8 +2,8 @@
 	'use strict';
 
 
-	$(document).on('submit', 'form', function(e){
-		$('.shifts-overlay').show();
+	$(document).on('submit', '.adminform', function(e){
+		$('.adminoverlays').show();
 
 	});
 
@@ -28,7 +28,7 @@
 	$(document).on('click', '.btn-delete-shift', function(){
 
 		if (confirm("Confirm delete.")) {
-			$('.shifts-overlay').show();
+			$('.adminoverlays').show();
 			var dataid = $(this).parents('tr').attr('data-id');
 
 			$('.shiftform .fb-form-elem').attr('disabled','disabled');
@@ -53,7 +53,7 @@
 	$(document).on('click', '.btn-delete-loc', function(){
 
 		if (confirm("Confirm delete.")) {
-			$('.shifts-overlay').show();
+			$('.adminoverlays').show();
 			var dataid = $(this).parents('tr').attr('data-id');
 
 			$('.locform .fb-form-elem').attr('disabled','disabled');
@@ -78,7 +78,7 @@
 	$(document).on('click', '.btn-delete-shifttype', function(){
 
 		if (confirm("Confirm delete.")) {
-			$('.shifts-overlay').show();
+			$('.adminoverlays').show();
 			var dataid = $(this).parents('tr').attr('data-id');
 
 			$('.shifttypeform .fb-form-elem').attr('disabled','disabled');
@@ -182,6 +182,7 @@
 			$('.shifttypeform .fb-form-elem, .new_shifttype').removeAttr('disabled');
 			$('#hidden_shifttype_id').val(response.shifttype_id);
 			$('#shifttype_name').val(response.shifttype_name);
+			$('#shifttype_colorcode').val(response.shifttype_colorcode);
 
 			$('#submit_shifttype').val("Update");
 
@@ -193,6 +194,39 @@
 		});
 	});
 
+	$(document).on('click', '.verifiedbadge', function(){
 
+		var state = $(this).attr('data-state');
+		var dataid = $(this).parents('tr').attr('data-id');
+		var thisthis = this;
+
+		$('.adminoverlays').show();
+		var request = $.ajax({
+			url: ajaxArr.ajaxUrl,
+			type: 'POST',
+			data: 'ajax=1&action=toggleVerifyShift' +
+			'&state=' + state +
+			'&dataid=' + dataid,
+			dataType: "json"
+		});
+
+		request.done(function(response) {
+			// location.reload();
+			if ( state == 1) {
+				$(thisthis).attr('class','badge badge-danger verifiedbadge');
+				$(thisthis).attr('data-state', 0);
+				$(thisthis).text('No');
+			} else {
+				$(thisthis).attr('class','badge badge-success verifiedbadge');
+				$(thisthis).attr('data-state', 1);
+				$(thisthis).text('Yes');
+			}
+			$('.adminoverlays').hide();
+		});
+		request.fail(function(response) {
+			$('.adminoverlays').hide();
+		});
+
+	});
 
 })( jQuery );

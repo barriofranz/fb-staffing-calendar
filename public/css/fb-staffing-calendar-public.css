@@ -46,6 +46,25 @@ width: 100%;
 
 .fb_sc_maindiv .fb_sc_submitbtn {
     float: right;
+    background: #2271b1 !important;
+    border-color: #2271b1 !important;
+    color: #fff !important;
+    text-decoration: none !important;
+    text-shadow: none !important;
+    display: inline-block !important;
+    font-size: 13px !important;
+    line-height: 2px !important;
+    min-height: 30px !important;
+    margin: 0 !important;
+    padding: 0 10px !important;
+    cursor: pointer !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    -webkit-appearance: none !important;
+    border-radius: 3px !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+    height: 28px !important;
 }
 .fb_sc_maindiv .fb_sc_submitbtn:focus,
 .fb_sc_maindiv .fb_sc_submitbtn:active {
@@ -77,6 +96,12 @@ width: 100%;
 
 
 
+.fb_sc_maindiv .add-user-shift
+{
+    background-color: #5cb85c !important;
+    color: #fff !important;
+    border: 1px solid #5cb85c !important;
+}
 .fb_sc_maindiv .choose-ym-calendar
 {
     background-color: #e2e3e5 !important;
@@ -176,7 +201,10 @@ width: 100%;
     font-size:12px;
     color: #000;
     /* max-width: 1000px !important; */
-    height: 100px;
+    min-height: 100px;
+    max-height: 100px;
+    overflow-y: auto;
+    /* overflow-ye: scroll; */
     vertical-align: middle;
     border-top: 1px solid #888888;
     border-left: 1px solid #888888;
@@ -185,6 +213,37 @@ width: 100%;
     margin: 0;
 }
 
+/*
+.fb_sc_maindiv .days li::-webkit-scrollbar {
+    display: none;
+}
+
+.fb_sc_maindiv .days li  {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+} */
+
+/* width */
+.fb_sc_maindiv .days li::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+.fb_sc_maindiv .days li::-webkit-scrollbar-track {
+    background: #fff; 
+}
+
+/* Handle */
+.fb_sc_maindiv .days li::-webkit-scrollbar-thumb {
+  background: #6c757d;
+}
+
+/* Handle on hover */
+.fb_sc_maindiv .days li::-webkit-scrollbar-thumb:hover {
+    background: #6c757d;
+}
+
+
 .fb_sc_maindiv .days li .active {
   padding: 5px;
   background: #1abc9c;
@@ -192,7 +251,8 @@ width: 100%;
 }
 
 
-.fb_sc_maindiv .ymd-label {
+.fb_sc_maindiv .ymd-label,
+.fb_sc_maindiv .overlaytitle {
     display: inline-block;
 }
 .fb_sc_maindiv .btn-overlay-close,
@@ -205,7 +265,9 @@ width: 100%;
     color: #000 !important;
     box-shadow: none;
 }
-.fb_sc_maindiv .shifts-overlay {
+.fb_sc_maindiv .overlays,
+.fb_sc_maindiv .blankoverlays,
+.fb_sc_maindiv .adminoverlays {
     position: fixed;
     display: none;
     width: 100%;
@@ -221,7 +283,10 @@ width: 100%;
     max-width: unset !important;
 }
 
-.fb_sc_maindiv .shifts-overlay .card {
+.fb_sc_maindiv .overlays .card,
+.fb_sc_maindiv .blankoverlays .card,
+.fb_sc_maindiv .adminoverlays .card
+{
     margin-top: 100px;
     padding-top: 15px;
 }
@@ -263,4 +328,35 @@ width: 100%;
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+.fb_sc_maindiv .verifiedbadge {
+    display: block;
+    cursor: pointer;
+}
+
+#calendar-div.fb_sc_maindiv .badge {
+    width: 100% !important;
+    border-radius: 0;
+    text-align: left;
+}
+
+.container2 {
+    max-width: 600px;
+    margin: auto;
+}
+
+.fb_sc_maindiv .fb-form-control,
+.fb_sc_maindiv .fb-form-control:active,
+.fb_sc_maindiv .fb-form-control:focus {
+    font-size: .875rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    display: block;
+    padding: 0 8px;
+    line-height: 2;
+    min-height: 30px;
+    box-shadow: 0 0 0 transparent;
+    border-radius: 4px;
+    border: 1px solid #8c8f94;
+    background-color: #fff;
+    color: #2c3338;
 }

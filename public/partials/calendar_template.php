@@ -1,8 +1,12 @@
 <div id="calendar-div" class="fb_sc_maindiv">
+
     <div class="month">
 
             <div class="input-group">
 
+                <div class="input-group-prepend">
+                    <button type="submit" class="btn btn-success add-user-shift" id="add-user-shift">Request Shift</button>
+                </div>
 
                 <select class="form-control" id="fb-year">
                     <?php
@@ -28,10 +32,19 @@
                 </select>
 
                 <select class="form-control " id="fb-shifttype">
-                    <option value="0" selected >All types</option>
+                    <option value="0" selected >All Shift Types</option>
                     <?php
-                    foreach ( $getShiftTypes as $shifttype) {
+                    foreach ( $shiftTypes as $shifttype) {
                         echo '<option value="'. $shifttype->shifttype_id .'" >' . $shifttype->shifttype_name . '</option>';
+                    }
+                    ?>
+                </select>
+
+                <select class="form-control " id="fb-location">
+                    <option value="0" selected >All Locations</option>
+                    <?php
+                    foreach ( $locations as $locs) {
+                        echo '<option value="'. $locs->location_id .'" >' . $locs->location_name . '</option>';
                     }
                     ?>
                 </select>
@@ -48,7 +61,7 @@
     </div>
 
 
-    <div class="shifts-overlay">
+    <div class="shifts-overlay overlays">
         <div class="container">
             <div class="card shifts-overlay-card">
                 <div class="card-title">
@@ -89,6 +102,20 @@
 
     </div>
 
-
+    <?php
+    include_once __DIR__ . '/user_requestshift_form.php';
+    ?>
 
 </div>
+<?php
+if ( isset( $doRefresh ) && $doRefresh == 1 ) {
+?>
+<script>
+
+    window.location = window.location;
+
+</script>
+
+<?php
+}
+?>

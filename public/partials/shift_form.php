@@ -1,4 +1,6 @@
 <div class="panel fb-panel fb_sc_maindiv">
+    <div class="shifts-overlay adminoverlays">
+    </div>
     <h3 class="card-title">Shift Schedules</h3>
 
     <div class="row card-body">
@@ -12,7 +14,7 @@
             </div>
             <br>
             <div class="shiftform">
-                <form action="" method="post">
+                <form action="" method="post" class="adminform">
                     <input type="hidden" name="hidden_shift_id" id="hidden_shift_id" value="" class="fb-form-elem">
 
                     <div class="form-group row">
@@ -90,6 +92,7 @@
                         <th>Shift Type</th>
                         <th>Shift Schedule</th>
                         <th>Email</th>
+                        <th>Verified</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -103,6 +106,7 @@
                         <td>From: <?= $val->shift_schedules_datefrom .' '. date('H:i', strtotime($val->shift_schedules_timefrom)) ?><br>
                             To: <?= $val->shift_schedules_dateto . ' ' . date('H:i', strtotime($val->shift_schedules_timeto)) ?></td>
                         <td><?= $val->shift_schedules_email ?></td>
+                        <td><?= $val->shift_schedules_location_verified ? '<span class="badge badge-success verifiedbadge" data-state="1">Yes</span>' : '<span class="badge badge-danger verifiedbadge" data-state="0">No</span>' ?></td>
                         <td>
                             <div class="btn-group btn-group-toggle">
                                 <button class="btn btn-sm btn-info btn-edit-shift"><span class="dashicons dashicons-edit"></span></button>
@@ -137,7 +141,7 @@
 
 
             <div class="locform">
-                <form action="" method="post">
+                <form action="" method="post" class="adminform">
                     <input type="hidden" name="hidden_loc_id" id="hidden_loc_id" value="" class="fb-form-elem">
 
                     <div class="form-group row">
@@ -191,8 +195,7 @@
 
     </div>
 
-    <div class="shifts-overlay">
-    </div>
+
 </div>
 
 
@@ -215,13 +218,21 @@
 
 
             <div class="shifttypeform">
-                <form action="" method="post">
+                <form action="" method="post" class="adminform">
                     <input type="hidden" name="hidden_shifttype_id" id="hidden_shifttype_id" value="" class="fb-form-elem">
 
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">Shift Type</label>
                         <div class="col-sm-8 ">
                             <input type="text" class="fb-input form-control form-control-sm fb-form-elem" id="shifttype_name" name="shifttype_name" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Color hex code</label>
+                        <div class="col-sm-8 ">
+                            <input type="text" class="fb-input form-control form-control-sm fb-form-elem" id="shifttype_colorcode" name="shifttype_colorcode" required>
+                            <small id="emailHelp" class="form-text text-muted">Use any hex code without sharp character (#)</small>
                         </div>
                     </div>
 
@@ -243,6 +254,7 @@
                     <tr>
                         <th>#</th>
                         <th>Shift Type</th>
+                        <th>Color hex code</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -252,6 +264,7 @@
                     <tr data-id="<?= $val->shifttype_id ?>">
                         <td><?= $val->shifttype_id ?></td>
                         <td><?= $val->shifttype_name ?></td>
+                        <td><?= $val->shifttype_colorcode ?></td>
                         <td>
                             <div class="btn-group btn-group-toggle">
                                 <button class="btn btn-sm btn-info btn-edit-shifttype"><span class="dashicons dashicons-edit"></span></button>
@@ -285,8 +298,8 @@
             <br>
 
 
-            <div class="shifttypeform">
-                <form action="" method="post">
+            <div class="settingsform">
+                <form action="" method="post" class="adminform">
 
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">Email from</label>

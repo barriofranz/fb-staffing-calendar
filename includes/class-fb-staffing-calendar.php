@@ -93,6 +93,13 @@ class Fb_Staffing_Calendar {
 
 		if ( 'toplevel_page_fb-staffing-calendar' === $current_screen->base ) {
 
+			wp_enqueue_style( 'wp-color-picker' );
+
+			wp_enqueue_style( 'bootstrapcss','https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css', false, null );
+			wp_enqueue_script( 'bootstappopperjs', 'https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js', false, null );
+			wp_enqueue_script( 'bootstapjs', 'https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js', false, null );
+
+			wp_enqueue_script('jquery-validate-min', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js', false, null  );
 
 			$css = plugins_url('fb-staffing-calendar/public/css/fb-staffing-calendar-public.css');
 			wp_enqueue_style( 'fb_sc_css', $css);
@@ -101,10 +108,6 @@ class Fb_Staffing_Calendar {
 			$js = plugins_url('fb-staffing-calendar/public/js/fb-staffing-calendar-public.js');
 			wp_enqueue_script( 'fb_sc_js', $js);
 			wp_localize_script( 'fb_sc_js', 'ajaxArr', array( 'ajaxUrl' => admin_url( 'admin-ajax.php' )));
-
-			wp_enqueue_style( 'bootstrapcss','https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css', false, null );
-			wp_enqueue_script( 'bootstappopperjs', 'https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js', false, null );
-			wp_enqueue_script( 'bootstapjs', 'https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js', false, null );
 
 		}
 	}
@@ -273,6 +276,7 @@ class Fb_Staffing_Calendar {
 		            'shift_schedules_timefrom' => $_POST['time_from'],
 		            'shift_schedules_dateto' => $_POST['date_to'],
 		            'shift_schedules_timeto' => $_POST['time_to'],
+					'shift_schedules_location_verified'=>1,
 		        ));
 
 				$this->alertType = 'success';
@@ -309,6 +313,7 @@ class Fb_Staffing_Calendar {
 					'shift_schedules_timefrom'=>$_POST['time_from'],
 					'shift_schedules_dateto'=>$_POST['date_to'],
 					'shift_schedules_timeto'=>$_POST['time_to'],
+					'shift_schedules_location_verified'=>1,
 				],
 				array('shift_schedules_id'=>$_POST['hidden_shift_id']));
 
@@ -363,6 +368,7 @@ class Fb_Staffing_Calendar {
 				global $table_prefix, $wpdb;
 				$wpdb->insert($wpdb->prefix . 'fb_sc_shift_type', array(
 		            'shifttype_name' => $_POST['shifttype_name'],
+		            'shifttype_colorcode' => $_POST['shifttype_colorcode'],
 		        ));
 
 				$this->alertType = 'success';
@@ -373,6 +379,7 @@ class Fb_Staffing_Calendar {
 				$wpdb->update($wpdb->prefix . 'fb_sc_shift_type',
 				[
 					'shifttype_name'=>$_POST['shifttype_name'],
+					'shifttype_colorcode'=>$_POST['shifttype_colorcode'],
 				],
 				array('shifttype_id'=>$_POST['hidden_shifttype_id']));
 

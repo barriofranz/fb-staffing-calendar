@@ -47,13 +47,14 @@ class Fb_Staffing_Calendar_Activator {
 		$sql = "
 		CREATE TABLE IF NOT EXISTS `" . $table_name . "` (
 			`shifttype_id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-			`shifttype_name` varchar(128)
+			`shifttype_name` varchar(128),
+			`shifttype_colorcode` varchar(10)
 		) $charset_collate;
 
-		INSERT INTO " . $table_name . " values (null,'RN');
-		INSERT INTO " . $table_name . " values (null,'CNA');
-		INSERT INTO " . $table_name . " values (null,'LPN');
-		INSERT INTO " . $table_name . " values (null,'PSA');
+		INSERT INTO " . $table_name . " values (null,'RN', '0275d8');
+		INSERT INTO " . $table_name . " values (null,'CNA', '5cb85c');
+		INSERT INTO " . $table_name . " values (null,'LPN', '5bc0de');
+		INSERT INTO " . $table_name . " values (null,'PSA', 'f0ad4e');
 		";
 		dbDelta( $sql );
 
@@ -75,6 +76,7 @@ class Fb_Staffing_Calendar_Activator {
 		$sql = "
 		CREATE TABLE IF NOT EXISTS `" . $table_name . "` (
 			`shift_schedules_id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+			`shift_schedules_location_verified` tinyint default 0,
 			`shift_schedules_location_id` int(11),
 			`shift_schedules_shifttype_id` int(11),
 			`shift_schedules_email` varchar(255),

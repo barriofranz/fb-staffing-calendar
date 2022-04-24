@@ -15,8 +15,8 @@
  * @wordpress-plugin
  * Plugin Name:       FB Staffing Calendar
  * Plugin URI:        https://github.com/barriofranz
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           1.0.4
+ * Description:       Plugin for custom calendar
+ * Version:           1.0.5
  * Author:            Franz Ian Barrio
  * Author URI:        https://github.com/barriofranz
  * License:           GPL-2.0+
@@ -133,6 +133,24 @@ function getShiftTypeData()
 	die();
 }
 
+add_action("wp_ajax_toggleVerifyShift", "toggleVerifyShift");
+function toggleVerifyShift()
+{
+	global $wpdb;
+
+	$dataid = $_POST['dataid'];
+	$state = $_POST['state'] == 1 ? 'null' : '1';
+
+	$bindArr = [$state, $dataid];
+	$sql = '
+	UPDATE '.$wpdb->prefix.'fb_sc_shift_schedules SET shift_schedules_location_verified = %s WHERE shift_schedules_id = %d';
+	$sql = $wpdb->prepare($sql, $bindArr);
+	$wpdb->get_results($sql);
+
+	$wpdb->get_results($sql);
+	// echo json_encode($result[0]);
+}
+
 add_action("wp_ajax_deleteShiftScheduleData", "deleteShiftScheduleData");
 function deleteShiftScheduleData()
 {
@@ -180,6 +198,7 @@ function getCalendarDays()
 	$month = $_POST['month'];
 	$year = $_POST['year'];
 	$shifttype = $_POST['shifttype'];
+	$location = $_POST['location'];
 
 	$yearmonth = $year . '/' . $month . '/01';
 
@@ -197,7 +216,7 @@ function getCalendarDays()
 	$firstDayOffset = date('w',strtotime($yearmonth)); //used
 	// echo "<pre>";print_r($currentDayLastOfMonth);echo "</pre>";die();
 
-	$daysWithShifts = getDaysWithShifts($year, $month, $shifttype);
+	$daysWithShifts = getDaysWithShifts($year, $month, $shifttype, $location);
 	include_once __DIR__ . '/public/partials/calendardays.php';
 
 
@@ -206,35 +225,57 @@ function getCalendarDays()
 }
 
 
-function getDaysWithShifts($year, $month, $shifttype)
+function getDaysWithShifts($year, $month, $shifttype, $location)
 {
 	global $wpdb;
 
+
+	$bindArr = [$month, $year,];
+	$sql = '
+	SELECT * FROM '.$wpdb->prefix.'fb_sc_shift_schedules t1
+	LEFT JOIN '.$wpdb->prefix.'fb_sc_shift_type t2 on t1.shift_schedules_shifttype_id = t2.shifttype_id
+	WHERE
+	shift_schedules_location_verified = 1
+	AND MONTH(t1.shift_schedules_datefrom) = "%d"
+	AND YEAR(t1.shift_schedules_datefrom) = "%d"
+	AND (t1.shift_schedules_email IS NULL OR t1.shift_schedules_email = "")
+	';
+
+
 	$shifttypeCond = '';
 	if ( $shifttype != 0 ) {
-		$shifttypeCond = '
-		AND shift_schedules_shifttype_id =' . $shifttype;
+		$sql .= '
+		AND t1.shift_schedules_shifttype_id = "%d"';
+		// AND shift_schedules_shifttype_id = "' . $shifttype. '"';
+		$bindArr[] = $shifttype;
 	}
-	$sql = '
-	SELECT * FROM '.$wpdb->prefix.'fb_sc_shift_schedules
-	where
-	MONTH(shift_schedules_datefrom) = "'.$month.'"
-	AND YEAR(shift_schedules_datefrom) = "'.$year.'"
-	' . $shifttypeCond . '
-	';
+	$locCond = '';
+	if ( $location != 0 ) {
+		$sql .= '
+		AND t1.shift_schedules_location_id = "%d"';
+		// AND shift_schedules_location_id = "' . $location. '"';
+		$bindArr[] = $location;
+	}
+
+	$sql = $wpdb->prepare($sql, $bindArr);
 
 	$shifts = $wpdb->get_results($sql);
 
 	$shifts1 = [];
 	$shifts2 = [];
 	foreach ($shifts as $shift) {
-
 		$day = date('d', strtotime($shift->shift_schedules_datefrom));
 		if (empty($shift->shift_schedules_email)) {
 			if (!array_key_exists($day, $shifts1)) {
-				$shifts1[$day] = 0;
+				$shifts1[$day] = [];
 			}
-			$shifts1[$day]++;
+			if (!array_key_exists($shift->shifttype_name, $shifts1[$day])) {
+				$shifts1[$day][$shift->shifttype_name]['count'] = 0;
+				$shifts1[$day][$shift->shifttype_name]['colorcode'] = $shift->shifttype_colorcode;
+			}
+
+			$shifts1[$day][$shift->shifttype_name]['count']++;
+
 		} else {
 			if (!array_key_exists($day, $shifts2)) {
 				$shifts2[$day] = 0;
@@ -243,7 +284,7 @@ function getDaysWithShifts($year, $month, $shifttype)
 		}
 
 	}
-
+	// echo "<pre>";print_r($shifts1);echo "</pre>";die();
 	return [
 		'unclaimed' => $shifts1,
 		'claimed' => $shifts2,
@@ -290,8 +331,10 @@ function updateShiftEmail()
 
 	if ( empty($res->shift_schedules_email) ) {
 		$shift = $res;
+		$bindArr = [$email,$dataid];
 		$sql = '
-		UPDATE '.$wpdb->prefix.'fb_sc_shift_schedules SET shift_schedules_email = "' . $email . '" WHERE shift_schedules_id = "'.$dataid.'"';
+		UPDATE '.$wpdb->prefix.'fb_sc_shift_schedules SET shift_schedules_email = "%s" WHERE shift_schedules_id = "%d"';
+		$sql = $wpdb->prepare($sql, $bindArr);
 		$wpdb->get_results($sql);
 
 		echo json_encode(['success'=>1]);
@@ -322,11 +365,58 @@ Claimed by: '.$email.'
 	die();
 }
 
+
+// add_action("wp_ajax_submitShiftRequest", "submitShiftRequest");
+// add_action("wp_ajax_nopriv_submitShiftRequest", "submitShiftRequest");
+function submitShiftRequest()
+{
+
+	global $table_prefix, $wpdb;
+	$wpdb->insert($wpdb->prefix . 'fb_sc_shift_schedules', array(
+		'shift_schedules_location_id' => $_POST['location_id'],
+		'shift_schedules_shifttype_id' => $_POST['shift_id'],
+		'shift_schedules_datefrom' => $_POST['date_from'],
+		'shift_schedules_timefrom' => $_POST['time_from'],
+		'shift_schedules_dateto' => $_POST['date_to'],
+		'shift_schedules_timeto' => $_POST['time_to'],
+		'shift_schedules_location_verified'=>0,
+		'shift_schedules_email'=>$_POST['email'],
+	));
+
+	$dataid = $wpdb->insert_id;
+	$scInc = new Fb_Staffing_Calendar;
+	$shift = $scInc->getShiftSchedulesByID($dataid)[0];
+
+	$fb_sc_emailfrom = get_option( 'fb_sc_emailfrom' );
+	if ( $fb_sc_emailfrom !== false ) {
+
+$message = 'A shift has been requested.<br>
+Here are the details:<br>
+<br>
+Location: '.$shift->location_name.'
+Shift type: '.$shift->shifttype_name.'
+From: '.$shift->shift_schedules_datefrom.' '.$shift->shift_schedules_timefrom.'
+To: '.$shift->shift_schedules_dateto.' '.$shift->shift_schedules_timeto.'
+Claimed by: '.$_POST['email'].'
+';
+
+		$to = [$fb_sc_emailfrom];
+		$subject = "Shift schedule requested";
+		$headers = 'From: '. $fb_sc_emailfrom . "\r\n" . 'Reply-To: ' . $fb_sc_emailfrom . "\r\n";
+		$sent = wp_mail($to, $subject, strip_tags($message), $headers);
+	}
+
+}
+
 add_shortcode( 'fb_sc_display_calendar', 'fb_sc_display_calendar_func' );
 function fb_sc_display_calendar_func( $atts )
 {
 	include_once __DIR__ . '/includes/class-fb-staffing-calendar.php';
-
+	if( isset( $_POST['submit_shift_request'] ) )
+    {
+        submitShiftRequest();
+		$doRefresh = 1;
+    }
 	wp_enqueue_script("jquery");
 	// $css = plugins_url('fb-staffing-calendar/public/css/fb-staffing-calendar-public.css');
 	// wp_enqueue_style( 'fb_sc_css', $css);
@@ -344,7 +434,8 @@ function fb_sc_display_calendar_func( $atts )
 
 
 	$scInc = new Fb_Staffing_Calendar;
-	$getShiftTypes = $scInc->getShiftTypes();
+	$shiftTypes = $scInc->getShiftTypes();
+	$locations = $scInc->getLocations();
 	// echo "<pre>";print_r($getShiftTypes);echo "</pre>";die();
 	include_once __DIR__ . '/public/partials/calendar_template.php';
 	return;

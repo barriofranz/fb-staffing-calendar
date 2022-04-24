@@ -1,6 +1,7 @@
 (function( $ ) {
 'use strict';
 
+
     var allowOverlayClose = true;
     $(document).on('click', '.btn-claim-sched', function(){
 
@@ -47,6 +48,14 @@
 
     });
 
+    $(document).on('click', '#add-user-shift', function(){
+        openRequestShiftOvelay();
+    });
+
+    function openRequestShiftOvelay() {
+        $('.requrest-shifts-overlay').show();
+    }
+
     $(document).on('click', '#calendardays .days .selectable', function(){
         var day = $(this).attr('data-day');
         $('#selectedDay').val(day);
@@ -77,7 +86,7 @@
     $(document).on('click', '.shifts-overlay, .btn-overlay-close', function(e){
 
         if ( allowOverlayClose == true ) {
-            $('.shifts-overlay').hide();
+            $('.overlays').hide();
             $('#selectedDay').val('');
             trigger_ym_calendar();
         }
@@ -100,7 +109,7 @@
 
     function getDateShifts(date)
     {
-
+        allowOverlayClose = false;
         var request = $.ajax({
             url: ajaxArr.ajaxUrl,
             type: 'POST',
@@ -111,16 +120,18 @@
 
         request.done(function(response) {
             $('#available-shifts-table tbody').html(response);
-
+            allowOverlayClose = true;
         });
 
         request.fail(function(response) {
+            allowOverlayClose = true;
         });
 
     }
 
     function trigger_ym_calendar()
     {
+        $('#fb-location').attr('disabled','disabled');
         $('#fb-shifttype').attr('disabled','disabled');
         $('#fb-month').attr('disabled','disabled');
         $('#fb-year').attr('disabled','disabled');
@@ -128,11 +139,13 @@
         var month = $('#fb-month').val();
         var year = $('#fb-year').val();
         var shifttype = $('#fb-shifttype').val();
+        var location = $('#fb-location').val();
 
         var request = $.ajax({
             url: ajaxArr.ajaxUrl,
             type: 'POST',
             data: 'ajax=1&action=getCalendarDays' +
+            '&location=' + location +
             '&shifttype=' + shifttype +
             '&month=' + month +
             '&year=' + year,
@@ -143,6 +156,7 @@
             $('#calendardays').html(response);
             $('#calendardays').attr('data-month',month);
             $('#calendardays').attr('data-year',year);
+            $('#fb-location').removeAttr('disabled');
             $('#fb-shifttype').removeAttr('disabled');
             $('#fb-month').removeAttr('disabled');
             $('#fb-year').removeAttr('disabled');
@@ -155,6 +169,8 @@
             $('#calendardays').html(response);
             $('#calendardays').attr('data-month',month);
             $('#calendardays').attr('data-year',year);
+            $('#fb-location').removeAttr('disabled');
+            $('#fb-shifttype').removeAttr('disabled');
             $('#fb-month').removeAttr('disabled');
             $('#fb-year').removeAttr('disabled');
             $('#choose-ym-calendar').removeAttr('disabled');

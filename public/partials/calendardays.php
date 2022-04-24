@@ -24,7 +24,10 @@ for ( $a=1; $a<=$maxDays; $a++ ) :
 
     $unclaimed = '';
     if ( isset($daysWithShifts['unclaimed'][$a]) ) {
-        $unclaimed = '<span class="badge badge-success">' . $daysWithShifts['unclaimed'][$a] . ' available</span><br>';
+        foreach ( $daysWithShifts['unclaimed'][$a] as $shiftkey => $shiftdata) {
+            $unclaimed .= '<span class="badge badge-secondary" style="background-color: #'.$shiftdata['colorcode'].'">' . $shiftdata['count'] . ' ' . $shiftkey . '</span><br>';
+        }
+
     }
 
     $claimed = '';
@@ -37,7 +40,6 @@ for ( $a=1; $a<=$maxDays; $a++ ) :
     <span>'.$a.'</span><br>
     '.$unclaimed.'
     '.$claimed.'
-
     </li>';
 
     if ( $a == $maxDays) {
