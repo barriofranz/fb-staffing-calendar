@@ -76,10 +76,8 @@ width: 100%;
     color: #fff;
 }
 
-.fb_sc_maindiv .fb_sc_table th:first-of-type,
 .fb_sc_maindiv .fb_sc_table th:last-of-type {
     width: 1px;
-
 }
 
 
@@ -230,7 +228,7 @@ width: 100%;
 
 /* Track */
 .fb_sc_maindiv .days li::-webkit-scrollbar-track {
-    background: #fff; 
+    background: #fff;
 }
 
 /* Handle */
@@ -299,11 +297,7 @@ width: 100%;
 .fb_sc_maindiv #available-shifts-table tr td {
     text-align: center;
 }
-.fb_sc_maindiv #available-shifts-table tr td:first-of-type {
-    text-align: right;
-}
 
-.fb_sc_maindiv #available-shifts-table th:first-of-type,
 .fb_sc_maindiv #available-shifts-table th:last-of-type {
     width: 40px;
 }
@@ -345,9 +339,9 @@ width: 100%;
     margin: auto;
 }
 
-.fb_sc_maindiv .fb-form-control,
-.fb_sc_maindiv .fb-form-control:active,
-.fb_sc_maindiv .fb-form-control:focus {
+#calendar-div.fb_sc_maindiv .fb-form-control,
+#calendar-div.fb_sc_maindiv .fb-form-control:active,
+#calendar-div.fb_sc_maindiv .fb-form-control:focus {
     font-size: .875rem;
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     display: block;
@@ -359,4 +353,53 @@ width: 100%;
     border: 1px solid #8c8f94;
     background-color: #fff;
     color: #2c3338;
+}
+
+.main-calendar:not(.loggedin),
+.main-auth.loggedin {
+    display: none;
+}
+.main-calendar.loggedin
+.main-auth {
+    display: block !important;
+}
+
+.input-group input.fb-form-control {
+    margin:0;
+}
+.input-group input.fb-form-control {
+
+    border-right: 0 !important;
+}
+.input-group-prepend .fb-form-control{
+    margin-right: -1px;
+
+}
+.input-group>.custom-select.fb-form-control:not(:last-child), .input-group>.form-control.fb-form-control:not(:last-child) {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.input-group-append, .input-group-prepend {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+.input-group-prepend input,
+.input-group-prepend button,
+.input-group-prepend select {
+    border-top-right-radius: 4px !important;
+    border-bottom-right-radius: 4px !important;
+}
+.pw-protect-div {
+    width: 300px;
+    margin: auto;
+}
+.pw-submit {
+    background-color: #cce5ff !important;
+    color: #004085 !important;
+}
+
+.pw-submit span {
+    margin-top: 3px;
 }

@@ -30,9 +30,15 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
+
+if( !session_id() )
+{
+	session_start();
+}
+
 /**
  * Currently plugin version.
  * Start at version 1.0.0 and use SemVer - https://semver.org
@@ -365,7 +371,28 @@ Claimed by: '.$email.'
 	die();
 }
 
+add_action("wp_ajax_addCalendarPwSession", "addCalendarPwSession");
+add_action("wp_ajax_nopriv_addCalendarPwSession", "addCalendarPwSession");
+function addCalendarPwSession()
+{
+	global $table_prefix, $wpdb;
+	session_start();
+	$pw_val = trim($_POST['pw_val']);
+	$hash = get_option( 'fb_sc_calendarpw' );
 
+
+	if (password_verify($pw_val, $hash)) {
+	    $_SESSION['loggedIn'] = 1;
+		$out = ['success'=>1];
+	} else {
+		$out = ['success'=>0];
+	}
+	echo json_encode($out);
+
+
+
+	die();
+}
 // add_action("wp_ajax_submitShiftRequest", "submitShiftRequest");
 // add_action("wp_ajax_nopriv_submitShiftRequest", "submitShiftRequest");
 function submitShiftRequest()
@@ -432,7 +459,12 @@ function fb_sc_display_calendar_func( $atts )
 	wp_enqueue_script( 'bootstapjs', 'https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js', false, null );
 
 
+	$isLoggedIn = 0;
 
+	if ( isset( $_SESSION['loggedIn'] ) && $_SESSION['loggedIn'] == 1 ) {
+		$isLoggedIn = 1;
+	}
+	
 	$scInc = new Fb_Staffing_Calendar;
 	$shiftTypes = $scInc->getShiftTypes();
 	$locations = $scInc->getLocations();

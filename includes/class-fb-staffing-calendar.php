@@ -288,6 +288,7 @@ class Fb_Staffing_Calendar {
 				$shift = $this->getShiftSchedulesByID($dataid)[0];
 
 				$fb_sc_emailfrom = get_option( 'fb_sc_emailfrom' );
+				$fb_sc_calendarpw = get_option( 'fb_sc_calendarpw' );
 // 				if ( $fb_sc_emailfrom !== false ) {
 // $message = 'A new shift has been posted.<br>
 // Here are the details:<br>
@@ -391,11 +392,16 @@ class Fb_Staffing_Calendar {
 
 			if ( isset($_POST) && isset($_POST['submit_fb_sc_settings']) && $_POST['submit_fb_sc_settings']=='Save' ) {
 				$fb_sc_emailfrom = get_option( 'fb_sc_emailfrom' );
+				$fb_sc_calendarpw = get_option( 'fb_sc_calendarpw' );
+
 				$email =  $_POST['fb_sc_emailfrom'];
+				$cal_pw =  trim($_POST['fb_sc_calendarpw']);
+				$haserror = false;
 				if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 					$this->alertType = 'warning';
 					$this->alertMessage = 'Invalid Email';
 					add_action( 'admin_notices', [ $this, 'showNotice' ]);
+					$haserror = true;
 				} else {
 
 					if ( $fb_sc_emailfrom === false ) {
@@ -403,12 +409,34 @@ class Fb_Staffing_Calendar {
 					} else {
 						update_option('fb_sc_emailfrom', $email);
 					}
+				}
 
+				if ( $cal_pw !== '' ) {
+					if ( $fb_sc_calendarpw === false ) {
+						$options = [
+							'cost' => 12,
+						];
+						$hash = password_hash($cal_pw, PASSWORD_BCRYPT, $options);
+						substr( $hash, 0, 60 );
+						add_option('fb_sc_calendarpw',$hash);
+					} else {
+						$options = [
+							'cost' => 12,
+						];
+						$hash = password_hash($cal_pw, PASSWORD_BCRYPT, $options);
+						substr( $hash, 0, 60 );
+						update_option('fb_sc_calendarpw', $hash);
+					}
+				}
+
+				echo "<pre>";print_r(strlen($hash));echo "</pre>";
+				echo "<pre>";print_r($hash);echo "</pre>";
+
+				if ( $haserror == false) {
 					$this->alertType = 'success';
 					$this->alertMessage = 'Saved';
 					add_action( 'admin_notices', [ $this, 'showNotice' ]);
 				}
-
 
 			}
 
@@ -433,6 +461,7 @@ class Fb_Staffing_Calendar {
 		$shift_scheds = $this->getShiftSchedules();
 
 		$fb_sc_emailfrom = get_option( 'fb_sc_emailfrom' );
+		$fb_sc_calendarpw = get_option( 'fb_sc_calendarpw' );
 
 		include_once __DIR__ . '/../public/partials/shift_form.php';
 	}

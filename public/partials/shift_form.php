@@ -87,7 +87,6 @@
             <table class="table table-sm table-bordered table-hover table-condensed fb_sc_table">
                 <thead>
                     <tr>
-                        <th>#</th>
                         <th>Location</th>
                         <th>Shift Type</th>
                         <th>Shift Schedule</th>
@@ -100,7 +99,6 @@
                 <tbody>
                     <?php foreach ( $shift_scheds as $val ) :?>
                     <tr data-id="<?= $val->shift_schedules_id ?>">
-                        <td><?= $val->shift_schedules_id ?></td>
                         <td><?= $val->location_name ?></td>
                         <td><?= $val->shifttype_name ?></td>
                         <td>From: <?= $val->shift_schedules_datefrom .' '. date('H:i', strtotime($val->shift_schedules_timefrom)) ?><br>
@@ -168,7 +166,6 @@
             <table class="table table-sm table-bordered table-hover table-condensed fb_sc_table">
                 <thead>
                     <tr>
-                        <th>#</th>
                         <th>Location</th>
                         <th></th>
                     </tr>
@@ -177,7 +174,6 @@
                 <tbody>
                     <?php foreach ( $locations as $val ) :?>
                     <tr data-id="<?= $val->location_id ?>">
-                        <td><?= $val->location_id ?></td>
                         <td><?= $val->location_name ?></td>
                         <td>
                             <div class="btn-group btn-group-toggle">
@@ -252,7 +248,6 @@
             <table class="table table-sm table-bordered table-hover table-condensed fb_sc_table">
                 <thead>
                     <tr>
-                        <th>#</th>
                         <th>Shift Type</th>
                         <th>Color hex code</th>
                         <th></th>
@@ -262,7 +257,6 @@
                 <tbody>
                     <?php foreach ( $shift_types as $val ) :?>
                     <tr data-id="<?= $val->shifttype_id ?>">
-                        <td><?= $val->shifttype_id ?></td>
                         <td><?= $val->shifttype_name ?></td>
                         <td><?= $val->shifttype_colorcode ?></td>
                         <td>
@@ -305,6 +299,14 @@
                         <label class="col-sm-4 col-form-label">Email from</label>
                         <div class="col-sm-8 ">
                             <input type="text" value="<?= $fb_sc_emailfrom ?>" class="fb-input form-control form-control-sm fb-form-elem" id="fb_sc_emailfrom" name="fb_sc_emailfrom" required>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Calendar Password</label>
+                        <div class="col-sm-8 ">
+                            <input type="password" value="" class="fb-input form-control form-control-sm fb-form-elem" id="fb_sc_calendarpw" name="fb_sc_calendarpw" required>
                         </div>
                     </div>
 

@@ -7,7 +7,6 @@ foreach ( $shift_schedules as $scheds) :
 ?>
 
 <tr>
-    <td><?= $scheds->shift_schedules_id ?></td>
     <td><?= $scheds->location_name ?></td>
     <td><?= $scheds->shifttype_name ?></td>
     <td><?= $scheds->shift_schedules_datefrom . ' ' . $scheds->shift_schedules_timefrom ?></td>
