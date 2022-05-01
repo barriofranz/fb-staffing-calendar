@@ -1,29 +1,59 @@
 (function( $ ) {
 'use strict';
 
+    function openClaimformOvelay() {
+        $('.claimform-overlay').show();
+    }
 
+    var claimshiftid = $(this).attr('data-id');
     var allowOverlayClose = true;
-    $(document).on('click', '.btn-claim-sched', function(){
+    $(document).on('click', '#fb_sc_claimbtn', function(e){
+        e.preventDefault();
+        claimShift();
+    });
+    $(document).on('click', '.btn-claim-sched', function(e){
+        openClaimformOvelay();
+        claimshiftid = $(this).attr('data-id');
+    });
 
-        var email = prompt("Please enter your email:");
-        if (email == null || email == "") {
+    function claimShift()
+    {
+        var email = $('#fb_sc_email').val();
+        var name = $('#fb_sc_name').val();
 
+        // var email = prompt("Please enter your email:");
+        if (email == null || email == "" || name == null || name == "") {
+            alert('Please fill up all of the fields');
         } else {
             allowOverlayClose = false;
+
+            $('#fb_sc_name').attr('disabled','disabled');
+            $('#fb_sc_email').attr('disabled','disabled');
             $('.btn-claim-sched').attr('disabled','disabled');
-            var dataid = $(this).attr('data-id');
+            $('#fb_sc_claimbtn').attr('disabled','disabled');
+
             var request = $.ajax({
                 url: ajaxArr.ajaxUrl,
                 type: 'POST',
                 data: 'ajax=1&action=updateShiftEmail' +
                 '&email=' + email +
-                '&dataid=' + dataid,
+                '&name=' + name +
+                '&dataid=' + claimshiftid,
                 dataType: "json"
             });
 
             request.done(function(response) {
                 allowOverlayClose = true;
-                $('#fb-year').removeAttr('disabled');
+
+                $('.claimform-overlay').hide();
+                $('.btn-claim-sched').removeAttr('disabled');
+                $('#fb_sc_name').removeAttr('disabled');
+                $('#fb_sc_email').removeAttr('disabled');
+                $('#fb_sc_claimbtn').removeAttr('disabled');
+
+                $('#fb_sc_email').val('');
+                $('#fb_sc_name').val('');
+
                 var doreload = false;
                 if ( response.success == 1) {
                     alert("Success");
@@ -36,7 +66,7 @@
                 }
 
                 if ( doreload ) {
-                    openDateOvelay($('#selectedDay').val());
+                    openDateOvelay();
                 }
             });
 
@@ -45,8 +75,7 @@
             });
 
         }
-
-    });
+    }
 
     $(document).on('click', '#add-user-shift', function(){
         openRequestShiftOvelay();
@@ -59,7 +88,7 @@
     $(document).on('click', '#calendardays .days .selectable', function(){
         var day = $(this).attr('data-day');
         $('#selectedDay').val(day);
-        openDateOvelay(day);
+        openDateOvelay();
     });
 
     function openDateOvelay(day) {
@@ -67,14 +96,13 @@
 
         var year = $('#calendardays').attr('data-year');
         var month = $('#calendardays').attr('data-month');
+        var day = $('#selectedDay').val();
+        var formattedDate = year + '/' + month + '/' + pad(day, 2);
 
         var selectedDate = new Date(year, (month-1), day);
         $('.shifts-overlay .ymd-label').text(selectedDate.toDateString());
 
-        $('#available-shifts-table tbody').html('<tr><td colspan="6" class="loadertd"><div class="loader"></div></td></tr>');
-
-        var formattedDate = year + '/' + month + '/' + pad(day, 2);
-        getDateShifts(formattedDate);
+        getDateShifts(formattedDate, 1);
     }
 
     function pad(num, size) {
@@ -83,21 +111,33 @@
         return num;
     }
 
-    $(document).on('click', '.shifts-overlay, .btn-overlay-close', function(e){
-
+    $(document).on('click', '.overlays', function(e){
         if ( allowOverlayClose == true ) {
-            $('.overlays').hide();
-            $('#selectedDay').val('');
-            trigger_ym_calendar();
+            $(this).hide();
+            if ( $(this).attr('data-overlay') == 'shifts-overlay' ) {
+                $('#selectedDay').val('');
+                trigger_ym_calendar();
+            }
         }
     });
-    $(document).on('click', '.shifts-overlay-card', function(e){
+
+    $(document).on('click', '.btn-overlay-close', function(e){
+        if ( allowOverlayClose == true ) {
+            $(this).parents('.overlays').hide();
+            if ( $(this).parents('.overlays').attr('data-overlay') == 'shifts-overlay' ) {
+                $('#selectedDay').val('');
+                trigger_ym_calendar();
+            }
+        }
+    });
+
+
+    $(document).on('click', '.overlay-card', function(e){
         e.stopPropagation();
     });
 
 
     $(document).on('click', '#choose-ym-calendar', function(){
-
         trigger_ym_calendar();
     });
 
@@ -144,20 +184,44 @@
 
     trigger_ym_calendar();
 
+	$(document).on('click', '.fb_sc_maindiv .pagination .page-link', function(e){
+		e.preventDefault();
+		var page = $(this).attr('data-page');
+		var pageitem = $(this).parents('.page-item');
 
-    function getDateShifts(date)
+		if ( $(pageitem).hasClass('active') ) {
+			return;
+		}
+		var datatable = $(this).parents('.tablediv').attr('data-table');
+
+		if ( datatable == 'available-shifts-table-div') {
+
+            var year = $('#calendardays').attr('data-year');
+            var month = $('#calendardays').attr('data-month');
+            var day = $('#selectedDay').val();
+            var formattedDate = year + '/' + month + '/' + pad(day, 2);
+
+			getDateShifts(formattedDate, page);
+		}
+
+	});
+
+    function getDateShifts(date, page)
     {
+        $('#available-shifts-table-div').html('<div class="loadertd"><div class="loader"></div></div>');
         allowOverlayClose = false;
         var request = $.ajax({
             url: ajaxArr.ajaxUrl,
             type: 'POST',
             data: 'ajax=1&action=getDateShifts' +
-            '&date=' + date,
+            '&date=' + date +
+            '&page=' + page,
             dataType: "html"
         });
 
         request.done(function(response) {
-            $('#available-shifts-table tbody').html(response);
+            $('#available-shifts-table-div').html(response);
+            // $('#available-shifts-table tbody').html(response);
             allowOverlayClose = true;
         });
 
@@ -214,4 +278,6 @@
             $('#choose-ym-calendar').removeAttr('disabled');
         });
     }
+
+
 })(jQuery);

@@ -229,4 +229,84 @@
 
 	});
 
+
+	loadScheduledShiftsTable(1);
+	loadLocationsTable(1);
+	loadShifttypesTable(1);
+	$(document).on('click', '.fb_sc_maindiv .pagination .page-link', function(e){
+		e.preventDefault();
+		var page = $(this).attr('data-page');
+		var pageitem = $(this).parents('.page-item');
+
+		if ( $(pageitem).hasClass('active') ) {
+			return;
+		}
+		var datatable = $(this).parents('.tablediv').attr('data-table');
+
+		if ( datatable == 'shift_schedules') {
+			loadScheduledShiftsTable(page);
+		} else if ( datatable == 'locations') {
+			loadLocationsTable(page);
+		} else if ( datatable == 'shifttypes') {
+			loadShifttypesTable(page);
+		}
+
+	});
+
+	function loadScheduledShiftsTable(page)
+	{
+		$('.scheduledshifts-table').html('<div class="loadertd"><div class="loader"></div></div>');
+		var request = $.ajax({
+			url: ajaxArr.ajaxUrl,
+			type: 'POST',
+			data: 'ajax=1&action=loadScheduledShiftsTable' +
+			"&page=" + page,
+			dataType: "html"
+		});
+
+		request.done(function(response) {
+			$('.scheduledshifts-table').html(response);
+		});
+		request.fail(function(response) {
+
+		});
+	}
+
+	function loadLocationsTable(page)
+	{
+		$('.locations-table').html('<div class="loadertd"><div class="loader"></div></div>');
+		var request = $.ajax({
+			url: ajaxArr.ajaxUrl,
+			type: 'POST',
+			data: 'ajax=1&action=loadLocationsTable' +
+			"&page=" + page,
+			dataType: "html"
+		});
+
+		request.done(function(response) {
+			$('.locations-table').html(response);
+		});
+		request.fail(function(response) {
+
+		});
+	}
+
+	function loadShifttypesTable(page)
+	{
+		$('.shifttypes-table').html('<div class="loadertd"><div class="loader"></div></div>');
+		var request = $.ajax({
+			url: ajaxArr.ajaxUrl,
+			type: 'POST',
+			data: 'ajax=1&action=loadShifttypesTable' +
+			"&page=" + page,
+			dataType: "html"
+		});
+
+		request.done(function(response) {
+			$('.shifttypes-table').html(response);
+		});
+		request.fail(function(response) {
+
+		});
+	}
 })( jQuery );

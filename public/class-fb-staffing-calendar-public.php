@@ -96,7 +96,7 @@ class Fb_Staffing_Calendar_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/fb-staffing-calendar-public.js', array( 'jquery' ), $this->version, false );
+		// wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/fb-staffing-calendar-public.js', array( 'jquery' ), $this->version, false );
 
 	}
 

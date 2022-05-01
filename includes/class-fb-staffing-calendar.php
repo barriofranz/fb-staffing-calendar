@@ -429,9 +429,6 @@ class Fb_Staffing_Calendar {
 					}
 				}
 
-				echo "<pre>";print_r(strlen($hash));echo "</pre>";
-				echo "<pre>";print_r($hash);echo "</pre>";
-
 				if ( $haserror == false) {
 					$this->alertType = 'success';
 					$this->alertMessage = 'Saved';
@@ -458,7 +455,6 @@ class Fb_Staffing_Calendar {
 	{
 		$locations = $this->getLocations();
 		$shift_types = $this->getShiftTypes();
-		$shift_scheds = $this->getShiftSchedules();
 
 		$fb_sc_emailfrom = get_option( 'fb_sc_emailfrom' );
 		$fb_sc_calendarpw = get_option( 'fb_sc_calendarpw' );
@@ -466,14 +462,25 @@ class Fb_Staffing_Calendar {
 		include_once __DIR__ . '/../public/partials/shift_form.php';
 	}
 
-	public function getShiftSchedules()
+	public function getShiftSchedules($count = false, $page = false, $limit = false)
 	{
 		global $wpdb;
+
+		$fields = $count == true ? 'count(t1.shift_schedules_id) as count' : '*' ;
+
+		$limitQ = '';
+		if ( $page!==false && $limit!==false ) {
+
+			$offset = $page*$limit;
+			$limitQ = "limit ".$offset.",".$limit."";
+		}
+
 		$sql = "
-			SELECT *
+			SELECT " . $fields . "
 			from " . $wpdb->prefix . "fb_sc_shift_schedules t1
 			left join " . $wpdb->prefix . "fb_sc_shift_type t2 on t1.shift_schedules_shifttype_id = t2.shifttype_id
 			left join " . $wpdb->prefix . "fb_sc_locations t3 on t1.shift_schedules_location_id = t3.location_id
+			" . $limitQ . "
 			;
 		";
 		// echo "<pre>";print_r($sql);echo "</pre>";die();
@@ -492,23 +499,71 @@ class Fb_Staffing_Calendar {
 	}
 
 
-	public function getLocations()
+	public function getLocations($count = false, $page = false, $limit = false)
 	{
 		global $wpdb;
 
+		$fields = $count == true ? 'count(location_id) as count' : '*' ;
+
+		$limitQ = '';
+		if ( $page!==false && $limit!==false ) {
+
+			$offset = $page*$limit;
+			$limitQ = "limit ".$offset.",".$limit."";
+		}
+
 		return $wpdb->get_results( "
-			SELECT * from " . $wpdb->prefix . "fb_sc_locations;
+			SELECT " . $fields . "
+			from " . $wpdb->prefix . "fb_sc_locations
+			" . $limitQ . ";
 		");
 
 	}
 
-	public function getShiftTypes()
+	public function getShiftTypes($count = false, $page = false, $limit = false)
 	{
 		global $wpdb;
 
+		$fields = $count == true ? 'count(shifttype_id) as count' : '*' ;
+
+		$limitQ = '';
+		if ( $page!==false && $limit!==false ) {
+
+			$offset = $page*$limit;
+			$limitQ = "limit ".$offset.",".$limit."";
+		}
+
 		return $wpdb->get_results( "
-			SELECT * from " . $wpdb->prefix . "fb_sc_shift_type;
+			SELECT " . $fields . "
+			from " . $wpdb->prefix . "fb_sc_shift_type
+			" . $limitQ . ";
 		");
+
+	}
+
+
+	public function getShiftScheduleByDate($date, $count = false, $page = false, $limit = false)
+	{
+		global $wpdb;
+
+		$fields = $count == true ? 'count(t1.shift_schedules_id) as count' : '*' ;
+
+		$limitQ = '';
+		if ( $page!==false && $limit!==false ) {
+
+			$offset = $page*$limit;
+			$limitQ = "limit ".$offset.",".$limit."";
+		}
+
+		$sql = '
+		SELECT ' . $fields . ' FROM '.$wpdb->prefix.'fb_sc_shift_schedules t1
+		left join ' . $wpdb->prefix . 'fb_sc_shift_type t2 on t1.shift_schedules_shifttype_id = t2.shifttype_id
+		left join ' . $wpdb->prefix . 'fb_sc_locations t3 on t1.shift_schedules_location_id = t3.location_id
+		WHERE shift_schedules_datefrom = "'.$date.'"
+		'. $limitQ . ';
+		' ;
+
+		return $wpdb->get_results( $sql );
 
 	}
 }

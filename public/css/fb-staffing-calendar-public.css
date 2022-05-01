@@ -302,7 +302,8 @@ width: 100%;
     width: 40px;
 }
 
-.fb_sc_maindiv button.btn-claim-sched {
+.fb_sc_maindiv button.btn-claim-sched,
+.fb_sc_maindiv .fb_sc_claimbtn {
     background-color: #17a2b8 !important;
     color: #fff !important;
 }
@@ -315,7 +316,8 @@ width: 100%;
   height: 60px;
   animation: spin 2s linear infinite;
 }
-.fb_sc_maindiv #available-shifts-table tr td.loadertd {
+.fb_sc_maindiv #available-shifts-table tr td.loadertd,
+.fb_sc_maindiv .loadertd {
     text-align: -webkit-center;
     padding: 30px 0;
 }
@@ -355,13 +357,16 @@ width: 100%;
     color: #2c3338;
 }
 
-.main-calendar:not(.loggedin),
+/* .main-calendar:not(.loggedin),
 .main-auth.loggedin {
     display: none;
 }
 .main-calendar.loggedin
 .main-auth {
     display: block !important;
+} */
+.main-auth {
+    display: none;
 }
 
 .input-group input.fb-form-control {
@@ -402,4 +407,35 @@ width: 100%;
 
 .pw-submit span {
     margin-top: 3px;
+}
+
+.fb_sc_maindiv .pagination {
+    display: inline-block;
+}
+.fb_sc_maindiv .page-item {
+    display: inline-block;
+}
+
+.claimform-overlay .card.overlay-card{
+    max-width: 500px;
+    margin: auto;
+    margin-top: 100px;
+}
+
+input[disabled="disabled"] {
+    opacity: 0.5;
+}
+
+#available-shifts-table-div .pagination {
+    border: 0;
+    margin: 0
+}
+
+.available-shifts-table-overflowdiv {
+    max-height: 65vh;
+    overflow-y: scroll;
+}
+
+.overlays h3 {
+    display: inline-block;
 }

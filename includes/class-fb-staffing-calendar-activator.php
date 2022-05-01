@@ -80,6 +80,7 @@ class Fb_Staffing_Calendar_Activator {
 			`shift_schedules_location_id` int(11),
 			`shift_schedules_shifttype_id` int(11),
 			`shift_schedules_email` varchar(255),
+			`shift_schedules_name` varchar(255),
 			`shift_schedules_datefrom` date,
 			`shift_schedules_timefrom` time,
 			`shift_schedules_dateto` date,
@@ -87,6 +88,8 @@ class Fb_Staffing_Calendar_Activator {
 		) $charset_collate;
 
 		";
+
+		// ALTER TABLE wp_fb_sc_shift_schedules ADD COLUMN `shift_schedules_name` VARCHAR(255);
 		dbDelta( $sql );
 	}
 

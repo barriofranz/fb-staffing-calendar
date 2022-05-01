@@ -1,4 +1,5 @@
 <div id="calendar-div" class="fb_sc_maindiv">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 
     <div class="main-auth <?php echo $isLoggedIn == 1 ? 'loggedin' : '' ?> ">
             <div class=" pw-protect-div">
@@ -75,9 +76,9 @@
     </div>
 
 
-    <div class="shifts-overlay overlays">
+    <div class="shifts-overlay overlays" data-overlay="shifts-overlay">
         <div class="container">
-            <div class="card shifts-overlay-card">
+            <div class="card overlay-card">
                 <div class="card-title">
                     <div class="col-sm-12">
                         <h3 class="ymd-label"></h3>
@@ -90,22 +91,56 @@
                 <div class="card-body">
                     <input type="hidden" id="selectedDay">
                     <div class="row">
+                        <div class="col-sm-12 tablediv" id="available-shifts-table-div" data-table="available-shifts-table-div">
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="claimform-overlay overlays" data-overlay="claimform-overlay">
+        <div class="container">
+            <div class="card overlay-card">
+                <div class="card-title">
+                    <div class="col-sm-12">
+                        <h3 class="claimform-label">Claim form</h3>
+                        <button type="button" class="btn btn-overlay-close">
+                            <!-- <span aria-hidden="true">×</span> -->
+                            X
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- <input type="hidden" id="selectedDay"> -->
+                    <div class="row">
                         <div class="col-sm-12">
-                            <table class="table table-sm table-bordered" id="available-shifts-table">
-                                <thead>
-                                    <tr>
-                                        <th>Location</th>
-                                        <th>Shift Type</th>
-                                        <th>From</th>
-                                        <th>To</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
 
-                                <tbody>
+                            <form action="" method="post" class="adminform">
 
-                                </tbody>
-                            </table>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">Name</label>
+                                    <div class="col-sm-8 ">
+                                        <input type="text" class="fb-input form-control form-control-sm fb-form-control" id="fb_sc_name" name="fb_sc_name" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">Email</label>
+                                    <div class="col-sm-8 ">
+                                        <input type="text" class="fb-input form-control form-control-sm fb-form-control" id="fb_sc_email" name="fb_sc_email" required>
+                                    </div>
+                                </div>
+
+                                <div class="submit-div">
+                                    <input type="submit" name="fb_sc_claimbtn" id="fb_sc_claimbtn" class="button button-primary fb-form-elem fb_sc_submitbtn fb_sc_claimbtn" value="Claim">
+                                </div>
+
+                            </form>
+
+
                         </div>
                     </div>
 

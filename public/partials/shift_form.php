@@ -83,39 +83,8 @@
 
         <br>
 
-        <div class="col-sm-6">
-            <table class="table table-sm table-bordered table-hover table-condensed fb_sc_table">
-                <thead>
-                    <tr>
-                        <th>Location</th>
-                        <th>Shift Type</th>
-                        <th>Shift Schedule</th>
-                        <th>Email</th>
-                        <th>Verified</th>
-                        <th></th>
-                    </tr>
-                </thead>
+        <div class="col-sm-6 scheduledshifts-table">
 
-                <tbody>
-                    <?php foreach ( $shift_scheds as $val ) :?>
-                    <tr data-id="<?= $val->shift_schedules_id ?>">
-                        <td><?= $val->location_name ?></td>
-                        <td><?= $val->shifttype_name ?></td>
-                        <td>From: <?= $val->shift_schedules_datefrom .' '. date('H:i', strtotime($val->shift_schedules_timefrom)) ?><br>
-                            To: <?= $val->shift_schedules_dateto . ' ' . date('H:i', strtotime($val->shift_schedules_timeto)) ?></td>
-                        <td><?= $val->shift_schedules_email ?></td>
-                        <td><?= $val->shift_schedules_location_verified ? '<span class="badge badge-success verifiedbadge" data-state="1">Yes</span>' : '<span class="badge badge-danger verifiedbadge" data-state="0">No</span>' ?></td>
-                        <td>
-                            <div class="btn-group btn-group-toggle">
-                                <button class="btn btn-sm btn-info btn-edit-shift"><span class="dashicons dashicons-edit"></span></button>
-                                <button class="btn btn-sm btn-danger btn-delete-shift"><span class="dashicons dashicons-trash"></span></button>
-                            </div>
-                        </td>
-                    </tr>
-                    <?php endforeach;?>
-                </tbody>
-
-            </table>
         </div>
 
     </div> <!-- row -->
@@ -162,30 +131,8 @@
 
         <br>
 
-        <div class="col-sm-6">
-            <table class="table table-sm table-bordered table-hover table-condensed fb_sc_table">
-                <thead>
-                    <tr>
-                        <th>Location</th>
-                        <th></th>
-                    </tr>
-                </thead>
+        <div class="col-sm-6 locations-table">
 
-                <tbody>
-                    <?php foreach ( $locations as $val ) :?>
-                    <tr data-id="<?= $val->location_id ?>">
-                        <td><?= $val->location_name ?></td>
-                        <td>
-                            <div class="btn-group btn-group-toggle">
-                                <button class="btn btn-sm btn-info btn-edit-loc"><span class="dashicons dashicons-edit"></span></button>
-                                <button class="btn btn-sm btn-danger btn-delete-loc"><span class="dashicons dashicons-trash"></span></button>
-                            </div>
-                        </td>
-                    </tr>
-                    <?php endforeach;?>
-                </tbody>
-
-            </table>
         </div>
 
 
@@ -244,32 +191,8 @@
 
         <br>
 
-        <div class="col-sm-6">
-            <table class="table table-sm table-bordered table-hover table-condensed fb_sc_table">
-                <thead>
-                    <tr>
-                        <th>Shift Type</th>
-                        <th>Color hex code</th>
-                        <th></th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <?php foreach ( $shift_types as $val ) :?>
-                    <tr data-id="<?= $val->shifttype_id ?>">
-                        <td><?= $val->shifttype_name ?></td>
-                        <td><?= $val->shifttype_colorcode ?></td>
-                        <td>
-                            <div class="btn-group btn-group-toggle">
-                                <button class="btn btn-sm btn-info btn-edit-shifttype"><span class="dashicons dashicons-edit"></span></button>
-                                <button class="btn btn-sm btn-danger btn-delete-shifttype"><span class="dashicons dashicons-trash"></span></button>
-                            </div>
-                        </td>
-                    </tr>
-                    <?php endforeach;?>
-                </tbody>
-
-            </table>
+        <div class="col-sm-6 shifttypes-table">
+            
         </div>
 
 
