@@ -275,7 +275,7 @@ width: 100%;
     right: 0;
     bottom: 0;
     background-color: rgba(0,0,0,0.5); /* Black background with opacity */
-    z-index: 2;
+    z-index: 10;
     /* cursor: pointer; */
     margin: 0 !important;
     max-width: unset !important;
@@ -357,17 +357,17 @@ width: 100%;
     color: #2c3338;
 }
 
-/* .main-calendar:not(.loggedin),
+.main-calendar:not(.loggedin),
 .main-auth.loggedin {
     display: none;
 }
 .main-calendar.loggedin
 .main-auth {
     display: block !important;
-} */
-.main-auth {
-    display: none;
 }
+/* .main-auth {
+    display: none;
+} */
 
 .input-group input.fb-form-control {
     margin:0;
@@ -432,7 +432,7 @@ input[disabled="disabled"] {
 }
 
 .available-shifts-table-overflowdiv {
-    max-height: 65vh;
+    max-height: 55vh;
     overflow-y: scroll;
 }
 

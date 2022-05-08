@@ -30,7 +30,7 @@ class Fb_Staffing_Calendar_Deactivator {
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {
-		self::fb_sc_uninstall();
+		// self::fb_sc_uninstall();
 	}
 
 

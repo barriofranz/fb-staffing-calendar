@@ -16,7 +16,7 @@
  * Plugin Name:       FB Staffing Calendar
  * Plugin URI:        https://github.com/barriofranz
  * Description:       Plugin for custom calendar
- * Version:           1.0.8
+ * Version:           1.0.10
  * Author:            Franz Ian Barrio
  * Author URI:        https://github.com/barriofranz
  * License:           GPL-2.0+
@@ -270,7 +270,7 @@ function getDaysWithShifts($year, $month, $shifttype, $location)
 	$shifts1 = [];
 	$shifts2 = [];
 	foreach ($shifts as $shift) {
-		$day = date('d', strtotime($shift->shift_schedules_datefrom));
+		$day = (int) date('d', strtotime($shift->shift_schedules_datefrom));
 		if (empty($shift->shift_schedules_email)) {
 			if (!array_key_exists($day, $shifts1)) {
 				$shifts1[$day] = [];
@@ -450,6 +450,7 @@ Claimed by: '.$_POST['email'].'
 add_shortcode( 'fb_sc_display_calendar', 'fb_sc_display_calendar_func' );
 function fb_sc_display_calendar_func( $atts )
 {
+	// unset($_SESSION['loggedIn']);
 	include_once __DIR__ . '/includes/class-fb-staffing-calendar.php';
 	if( isset( $_POST['submit_shift_request'] ) )
     {
