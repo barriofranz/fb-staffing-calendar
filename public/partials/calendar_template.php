@@ -25,7 +25,7 @@
                     <select class="form-control" id="fb-year">
                         <?php
                         $yearNow = (int)date('Y');
-                        for ($m=($yearNow); $m<=($yearNow+1); $m++) {
+                        for ($m=($yearNow); $m<=($yearNow+3); $m++) {
                             echo '<option value="'. $m .'" ' . (($m==$yearNow) ? 'selected' : '') . '>' . $m . '</option>';
                         }
                         ?>
@@ -134,8 +134,18 @@
                                     </div>
                                 </div>
 
-                                <div class="submit-div">
-                                    <input type="submit" name="fb_sc_claimbtn" id="fb_sc_claimbtn" class="button button-primary fb-form-elem fb_sc_submitbtn fb_sc_claimbtn" value="Claim">
+                                <div class="form-group row">
+                                    <div class="form-check newuser_chk_label">
+                                        <label class="form-check-label " for="newuser_chk">
+                                            Click here if you have not worked at this facility before
+                                        </label>
+                                        <input class="form-check-input" type="checkbox" value="" name="newuser_chk" id="newuser_chk">
+                                    </div>
+
+
+                                    <div class="submit-div">
+                                        <input type="submit" name="fb_sc_claimbtn" id="fb_sc_claimbtn" class="button button-primary fb-form-elem fb_sc_submitbtn fb_sc_claimbtn" value="Claim">
+                                    </div>
                                 </div>
 
                             </form>

@@ -16,7 +16,7 @@
  * Plugin Name:       FB Staffing Calendar
  * Plugin URI:        https://github.com/barriofranz
  * Description:       Plugin for custom calendar
- * Version:           1.0.10
+ * Version:           1.0.11
  * Author:            Franz Ian Barrio
  * Author URI:        https://github.com/barriofranz
  * License:           GPL-2.0+
@@ -327,6 +327,7 @@ function updateShiftEmail()
 	global $wpdb;
 	$email = $_POST['email'];
 	$name = $_POST['name'];
+	$newuser_chk = $_POST['newuser_chk'];
 	$dataid = $_POST['dataid'];
 
 	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -342,13 +343,15 @@ function updateShiftEmail()
 		$bindArr = [
 			$email,
 			$name,
+			$newuser_chk,
 			$dataid,
 		];
 		$sql = '
 		UPDATE '.$wpdb->prefix.'fb_sc_shift_schedules
 		SET
 		shift_schedules_email = "%s",
-		shift_schedules_name = "%s"
+		shift_schedules_name = "%s",
+		shift_schedules_is_new_chk = "%s"
 
 		WHERE shift_schedules_id = "%d"';
 		$sql = $wpdb->prepare($sql, $bindArr);
@@ -367,6 +370,7 @@ Shift type: '.$shift->shifttype_name.'
 From: '.$shift->shift_schedules_datefrom.' '.$shift->shift_schedules_timefrom.'
 To: '.$shift->shift_schedules_dateto.' '.$shift->shift_schedules_timeto.'
 Claimed by: '.$email.'
+Is New: '. ( $newuser_chk === 1 ? 'Yes' : 'No').'
 		';
 
 			$to = [$email, $fb_sc_emailfrom];
@@ -495,8 +499,13 @@ function loadScheduledShiftsTable()
 
 	$count = $scInc->getShiftSchedules(true);
 
+	$order  = [
+		'col'=>'shift_schedules_datefrom',
+		'dir'=>'desc',
+	];
+
 	$count = $count[0]->count;
-	$rows = $scInc->getShiftSchedules(false, $page, $limit);
+	$rows = $scInc->getShiftSchedules(false, $page, $limit, $order);
 
 	include_once __DIR__ . '/public/partials/admintables/scheduledshifts.php';
 

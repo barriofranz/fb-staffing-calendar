@@ -20,6 +20,7 @@
     {
         var email = $('#fb_sc_email').val();
         var name = $('#fb_sc_name').val();
+        var newuser_chk = $('#newuser_chk').is(":checked") ? 1 : 0;
 
         // var email = prompt("Please enter your email:");
         if (email == null || email == "" || name == null || name == "") {
@@ -29,6 +30,7 @@
 
             $('#fb_sc_name').attr('disabled','disabled');
             $('#fb_sc_email').attr('disabled','disabled');
+            $('#newuser_chk').attr('disabled','disabled');
             $('.btn-claim-sched').attr('disabled','disabled');
             $('#fb_sc_claimbtn').attr('disabled','disabled');
 
@@ -38,6 +40,7 @@
                 data: 'ajax=1&action=updateShiftEmail' +
                 '&email=' + email +
                 '&name=' + name +
+                '&newuser_chk=' + newuser_chk +
                 '&dataid=' + claimshiftid,
                 dataType: "json"
             });
@@ -50,9 +53,11 @@
                 $('#fb_sc_name').removeAttr('disabled');
                 $('#fb_sc_email').removeAttr('disabled');
                 $('#fb_sc_claimbtn').removeAttr('disabled');
+                $('#newuser_chk').removeAttr('disabled');
 
                 $('#fb_sc_email').val('');
                 $('#fb_sc_name').val('');
+                $('#newuser_chk').removeAttr('checked');
 
                 var doreload = false;
                 if ( response.success == 1) {

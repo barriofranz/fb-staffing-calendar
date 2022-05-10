@@ -42,6 +42,11 @@ width: 100%;
 
 .fb_sc_maindiv .submit-div {
     overflow: hidden;
+    display: inline-block;
+    float: right;
+    right: 0;
+    position: absolute;
+    margin-right: 15px;
 }
 
 .fb_sc_maindiv .fb_sc_submitbtn {
@@ -438,4 +443,19 @@ input[disabled="disabled"] {
 
 .overlays h3 {
     display: inline-block;
+}
+
+.newuser_chk_label #newuser_chk {
+    margin: 0 5px;
+    height: 20px;
+    width: 20px;
+}
+.newuser_chk_label {
+    display: inline-block;
+    font-size: 13px;
+    padding-left: 15px;
+    padding-top: 5px;
+}
+.newuser_chk_label label {
+    font-size: 13px;
 }

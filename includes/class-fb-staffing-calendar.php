@@ -462,7 +462,7 @@ class Fb_Staffing_Calendar {
 		include_once __DIR__ . '/../public/partials/shift_form.php';
 	}
 
-	public function getShiftSchedules($count = false, $page = false, $limit = false)
+	public function getShiftSchedules($count = false, $page = false, $limit = false, $order = false)
 	{
 		global $wpdb;
 
@@ -474,12 +474,17 @@ class Fb_Staffing_Calendar {
 			$offset = $page*$limit;
 			$limitQ = "limit ".$offset.",".$limit."";
 		}
+		$orderQ = '';
+		if ( $order!==false ) {
+			$orderQ = ' order by ' . $order['col'] . ' ' . $order['dir'];
+		}
 
 		$sql = "
 			SELECT " . $fields . "
 			from " . $wpdb->prefix . "fb_sc_shift_schedules t1
 			left join " . $wpdb->prefix . "fb_sc_shift_type t2 on t1.shift_schedules_shifttype_id = t2.shifttype_id
 			left join " . $wpdb->prefix . "fb_sc_locations t3 on t1.shift_schedules_location_id = t3.location_id
+			" . $orderQ . "
 			" . $limitQ . "
 			;
 		";
