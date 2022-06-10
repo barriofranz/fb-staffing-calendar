@@ -104,10 +104,14 @@
         var day = $('#selectedDay').val();
         var formattedDate = year + '/' + month + '/' + pad(day, 2);
 
+
+        var shifttype = $('#fb-shifttype').val();
+        var location = $('#fb-location').val();
+
         var selectedDate = new Date(year, (month-1), day);
         $('.shifts-overlay .ymd-label').text(selectedDate.toDateString());
 
-        getDateShifts(formattedDate, 1);
+        getDateShifts(formattedDate, shifttype, location, 1);
     }
 
     function pad(num, size) {
@@ -211,7 +215,7 @@
 
 	});
 
-    function getDateShifts(date, page)
+    function getDateShifts(date, shifttype, location, page)
     {
         $('#available-shifts-table-div').html('<div class="loadertd"><div class="loader"></div></div>');
         allowOverlayClose = false;
@@ -220,6 +224,8 @@
             type: 'POST',
             data: 'ajax=1&action=getDateShifts' +
             '&date=' + date +
+            '&shifttype=' + shifttype +
+            '&location=' + location +
             '&page=' + page,
             dataType: "html"
         });

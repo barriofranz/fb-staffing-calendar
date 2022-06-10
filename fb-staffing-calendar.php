@@ -16,7 +16,7 @@
  * Plugin Name:       FB Staffing Calendar
  * Plugin URI:        https://github.com/barriofranz
  * Description:       Plugin for custom calendar
- * Version:           1.0.11
+ * Version:           1.0.12
  * Author:            Franz Ian Barrio
  * Author URI:        https://github.com/barriofranz
  * License:           GPL-2.0+
@@ -305,15 +305,17 @@ function getDateShifts()
 	global $wpdb;
 
 	$date = $_POST['date'];
+	$shifttype = $_POST['shifttype'];
+	$location = $_POST['location'];
 	$page = isset($_POST['page']) ? (int)$_POST['page']-1 : 0;
 
 	$limit = 10;
 
 	$scInc = new Fb_Staffing_Calendar;
-	$count = $scInc->getShiftScheduleByDate($date, true);
+	$count = $scInc->getShiftScheduleByDate($date, $shifttype, $location, true);
 
 	$count = $count[0]->count;
-	$shift_schedules = $scInc->getShiftScheduleByDate($date, false, $page, $limit);
+	$shift_schedules = $scInc->getShiftScheduleByDate($date, $shifttype, $location, false, $page, $limit);
 
 	include_once __DIR__ . '/public/partials/availableshifts-table.php';
 

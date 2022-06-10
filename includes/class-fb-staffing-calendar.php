@@ -547,7 +547,7 @@ class Fb_Staffing_Calendar {
 	}
 
 
-	public function getShiftScheduleByDate($date, $count = false, $page = false, $limit = false)
+	public function getShiftScheduleByDate($date, $shifttype, $location, $count = false, $page = false, $limit = false)
 	{
 		global $wpdb;
 
@@ -555,16 +555,27 @@ class Fb_Staffing_Calendar {
 
 		$limitQ = '';
 		if ( $page!==false && $limit!==false ) {
-
 			$offset = $page*$limit;
 			$limitQ = "limit ".$offset.",".$limit."";
+		}
+		$shiftTypeCond = '';
+		if ( $shifttype!=0 ) {
+			$shiftTypeCond = ' and shift_schedules_shifttype_id = "'.$shifttype.'"';
+		}
+		$locCond = '';
+		if ( $location!=0 ) {
+			$locCond = ' and shift_schedules_location_id = "'.$location.'"';
 		}
 
 		$sql = '
 		SELECT ' . $fields . ' FROM '.$wpdb->prefix.'fb_sc_shift_schedules t1
 		left join ' . $wpdb->prefix . 'fb_sc_shift_type t2 on t1.shift_schedules_shifttype_id = t2.shifttype_id
 		left join ' . $wpdb->prefix . 'fb_sc_locations t3 on t1.shift_schedules_location_id = t3.location_id
-		WHERE shift_schedules_datefrom = "'.$date.'"
+		WHERE
+		shift_schedules_datefrom = "'.$date.'"
+		' . $shiftTypeCond . '
+		' . $locCond . '
+
 		'. $limitQ . ';
 		' ;
 

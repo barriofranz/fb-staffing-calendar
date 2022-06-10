@@ -51,7 +51,7 @@ class Fb_Staffing_Calendar_Activator {
 			shifttype_name varchar(128),
 			shifttype_colorcode varchar(10)
 		) $charset_collate;
-		
+
 		";
 		dbDelta( $sql );
 
